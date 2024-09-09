@@ -16,7 +16,7 @@ const PORT = process.env.PORT || 2307;
 app.use(express.static('./Static'));
 
 app.use(cors({
-    origin: 'https://w-commerce-4c78f.web.app',
+    origin: 'http://localhost:8080/',
     credentials: true
 }));
 
