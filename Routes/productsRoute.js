@@ -1,11 +1,11 @@
 import express from 'express';
 import controller from '../Controllers/productController.js';
-import authenticateUser from '../Middleware/authenticate.js'; // Middleware for user authentication
+import { auth } from '../middleware/verifyJwt.js'; // Correct case and import as named export
 
 const router = express.Router();
 
-// Protect all routes under '/items' with authentication middleware
-router.use(authenticateUser);
+// Protect all routes under '/products' with JWT verification middleware
+router.use(auth);
 
 router.route('/')
     .get(controller.allProducts) // Get all products (requires authentication)
@@ -13,7 +13,7 @@ router.route('/')
 
 router.route('/:id')
     .get(controller.prodByID) // Get product by ID (requires authentication)
-    .delete(controller.delProductByID) // Delete product by ID (requires authentication)
-    .put(controller.editProductByID) // Update product by ID (requires authentication)
+    .delete(controller.delProductByID) // Delete product (requires authentication, no admin required)
+    .patch(controller.editProductByID); // Edit product (requires authentication)
 
 export default router;

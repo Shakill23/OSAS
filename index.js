@@ -5,12 +5,13 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import productsRoute from './Routes/productsRoute.js';
 import cartRoute from './Routes/cartRoute.js';
-import verifyJwt from './Middleware/verifyJwt.js'
-import userRoute from './Routes/userRoute.js';
-import authenticate from './Middleware/signToken.js';
+import { router as userRoute } from './Routes/userRoute.js';
+
+import { auth } from './middleware/verifyJwt.js'; // Import authentication middleware
+import authenticate from './middleware/signToken.js'; // Import token sign middleware
 
 const app = express();
-const PORT = process.env.MYSQL_ADDON_PORT || 3023;
+const PORT = process.env.PORT || 2307;
 
 app.use(express.static('./Static'));
 
@@ -22,19 +23,29 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
-app.post('/login', authenticate, (req, res) => { 
-});
+// Public route for login
+app.post('/login', authenticate);
 
+// Public route for logout
 app.delete('/logout', (req, res) => {
-    res.clearCookie('jwt')
+    res.clearCookie('jwt');
+    console.log("User logged out, cookies cleared.");
     res.json({
-        msg : 'logged out successfully'
+        msg: 'Logged out successfully'
     });
 });
 
-app.use('/products', productsRoute);
-app.use('/cart', cartRoute);
+// Apply authentication middleware for routes that need it
+app.use('/products', auth, productsRoute);
+app.use('/carts', auth, cartRoute);
 app.use('/users', userRoute);
 
-app.listen(PORT, console.log(`server running on http://localhost:${PORT}`));
 
+// 404 Catcher - After all routes
+app.use((req, res, next) => {
+    res.status(404).send({ msg: 'Route not found' });
+});
+
+app.listen(PORT, () => {
+    console.log(`Server running on http://localhost:${PORT}`);
+});
