@@ -1,4 +1,7 @@
 import { pool } from '../config/config.js';
+import { encryptPassword } from '../Middleware/hashPass.js';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
 // Product settings ===============
 
@@ -69,92 +72,50 @@ const addProduct = async (productName, productDesc, amount, productURL, category
     return getProducts(result.insertId);
 };
 
+
+
 // Cart settings ===============
 
-const getCart = async (userID) => {
-    const [cart] = await pool.query(`
+// Fetch all carts for admins
+const getAllCarts = async () => {
+    const [carts] = await pool.query(`
         SELECT 
-            cart.cartID,
+        cart.cartID, 
+            cart.userID, 
             cart.quantity,
             products.productName,
             products.amount,
             (cart.quantity * products.amount) AS total_price,
             products.productURL
-        FROM 
-            cart
-        JOIN 
-            products ON cart.productID = products.productID
-        WHERE 
-            cart.userID = ?
-    `, [userID]);
-    return cart;
+            FROM cart
+            JOIN products ON cart.productID = products.productID
+            `);
+    return carts;
 };
 
-const addedInCart = async (userID) => {
-    const [cartItems] = await pool.query(`
-        SELECT 
-            cart.quantity,
-            products.amount,
-            (cart.quantity * products.amount) AS totalPrice,
-            products.productURL AS productURL,
-            products.productName AS productName,
-            products.productID AS productID
-        FROM 
-            cart
-        JOIN 
-            products ON cart.productID = products.productID
-        WHERE 
-            cart.userID = ?
-    `, [userID]);
-
-    return cartItems;
-};
-
-const addToCart = async (productID, userID) => {
+// Add an item to cart
+const insert = async (productID, userID, quantity) => {
     const [existingProduct] = await pool.query(`
-        SELECT * FROM cart
-        WHERE productID = ? AND userID = ?
-    `, [productID, userID]);
+                SELECT * FROM cart
+                WHERE productID = ? AND userID = ?
+            `, [productID, userID]);
 
     if (existingProduct.length > 0) {
-        const updatedQuantity = existingProduct[0].quantity + 1;
-
+        const updatedQuantity = existingProduct[0].quantity + quantity;
         await pool.query(`
-            UPDATE cart
-            SET quantity = ?
-            WHERE productID = ? AND userID = ?
-        `, [updatedQuantity, productID, userID]);
-
+                    UPDATE cart
+                    SET quantity = ?
+                    WHERE productID = ? AND userID = ?
+                `, [updatedQuantity, productID, userID]);
     } else {
         await pool.query(`
-            INSERT INTO cart (productID, userID, quantity)
-            VALUES (?, ?, 1)
-        `, [productID, userID]);
+                    INSERT INTO cart (productID, userID, quantity)
+                    VALUES (?, ?, ?)
+                `, [productID, userID, quantity]);
     }
 };
 
-const insert = async (productID, userID) => {
-    await addToCart(productID, userID);
-};
-
-const editCart = async (productID, userID, quantity, cartID) => {
-    if (!cartID || isNaN(cartID)) {
-        throw new Error("Invalid cart ID");
-    }
-
-    const [result] = await pool.query(`
-        UPDATE cart 
-        SET productID = ?, quantity = ? 
-        WHERE cartID = ? AND userID = ?
-    `, [productID, quantity, cartID, userID]);
-
-    if (result.affectedRows === 0) {
-        throw new Error("Update failed, possibly due to an invalid cart ID or no changes made");
-    }
-
-    return result;
-};
-
+// Define removeFromCart function if it's missing
 const removeFromCart = async (productID, userID) => {
     const [existingProduct] = await pool.query(`
         SELECT * FROM cart
@@ -179,34 +140,136 @@ const removeFromCart = async (productID, userID) => {
     }
 };
 
-// User settings ===============
 
-const checkUser = async (emailAdd, userRole) => {
-    const [[{ passw }]] = await pool.query(`
-        SELECT passw FROM users WHERE emailAdd = ? AND userRole = ?
-    `, [emailAdd, userRole]);
-    return passw;
+// Fetch a specific cart for a user
+const getCart = async (userID) => {
+    const [cart] = await pool.query(`
+        SELECT 
+            cart.cartID,
+            cart.quantity,
+            products.productName,
+            products.amount,
+            (cart.quantity * products.amount) AS total_price,
+            products.productURL
+        FROM 
+            cart
+        JOIN 
+            products ON cart.productID = products.productID
+        WHERE 
+            cart.userID = ?
+    `, [userID]);
+    return cart;
 };
+
+// New function to fetch all cart items (for admins)
+const addedInCart = async (userID) => {
+    const [cartItems] = await pool.query(`
+        SELECT 
+            cart.quantity,
+            products.amount,
+            (cart.quantity * products.amount) AS totalPrice,
+            products.productURL,
+            products.productName,
+            products.productID
+        FROM 
+            cart
+        JOIN 
+            products ON cart.productID = products.productID
+        WHERE 
+            cart.userID = ?
+    `, [userID]);
+    return cartItems;
+};
+
+// Add an item to cart
+const addToCart = async (productID, userID) => {
+    const [existingProduct] = await pool.query(`
+        SELECT * FROM cart
+        WHERE productID = ? AND userID = ?
+    `, [productID, userID]);
+
+    if (existingProduct.length > 0) {
+        const updatedQuantity = existingProduct[0].quantity + 1;
+        await pool.query(`
+            UPDATE cart
+            SET quantity = ?
+            WHERE productID = ? AND userID = ?
+        `, [updatedQuantity, productID, userID]);
+    } else {
+        await pool.query(`
+            INSERT INTO cart (productID, userID, quantity)
+            VALUES (?, ?, 1)
+        `, [productID, userID]);
+    }
+};
+
+// Update cart item
+const editCart = async (productID, userID, quantity, cartID) => {
+    const [result] = await pool.query(`
+        UPDATE cart 
+        SET productID = ?, quantity = ? 
+        WHERE cartID = ? AND userID = ?
+    `, [productID, quantity, cartID, userID]);
+
+    return result;
+};
+
+// Delete a specific cart item by cartID
+const deleteSpecificItem = async (cartID, userID) => {
+    await pool.query(`
+        DELETE FROM cart
+        WHERE cartID = ? AND userID = ?
+    `, [cartID, userID]);
+};
+
+
+
+// const generateJWT = (user) => {
+//     console.log("User object before JWT generation:", user);
+//     const payload = {
+//         emailAdd: user.emailAdd,
+//         userRole: user.userRole,
+//         userID: user.userID, // Ensure userID is included in the payload
+//     };
+
+//     try {
+//         return jwt.sign(payload, process.env.SECRET_KEY, { expiresIn: '1h' });
+//     } catch (error) {
+//         throw new Error('Error generating JWT: ' + error.message);
+//     }
+// };
+
+
+
+
+
 
 const getUsers = async () => {
-    const [users] = await pool.query(`
-        SELECT * FROM users
-    `);
-    return users;
-};
-
-const addUser = async (username, emailAdd, passw, userRole, profileURL) => {
-    const [result] = await pool.query(`
-        INSERT INTO users (username, emailAdd, passw, userRole, profileURL) 
-        VALUES(?, ?, ?, ?, ?)
-    `, [username, emailAdd, passw, userRole, profileURL]);
-
-    if (result.affectedRows === 0) {
-        throw new Error("Failed to add user");
+    try {
+        const [users] = await pool.query(`
+            SELECT * FROM users
+        `);
+        console.log("getUsers query result:", users);
+        return users;
+    } catch (error) {
+        console.error("Error fetching users from DB:", error);
+        throw new Error("Database error. Unable to retrieve users.");
     }
-
-    return getUsers(result.insertId);
 };
+
+
+const addUser = async ({ username, emailAdd, passw, userRole, profileURL }) => {
+    try {
+        const query = `INSERT INTO users (username, emailAdd, passw, userRole, profileURL)
+                       VALUES (?, ?, ?, ?, ?)`;
+        await pool.execute(query, [username, emailAdd, passw, userRole, profileURL]);
+
+        return { username, emailAdd, userRole, profileURL };
+    } catch (error) {
+        throw new Error('Error inserting user into the database: ' + error.message);
+    }
+};
+
 
 const getUserByID = async (userID) => {
     if (!userID || isNaN(userID)) {
@@ -215,30 +278,44 @@ const getUserByID = async (userID) => {
 
     const [user] = await pool.query(`
         SELECT * FROM users WHERE userID = ?
-    `, [userID]);
+        `, [userID]);
 
     if (user.length === 0) {
         throw new Error("User not found");
     }
 
-    return user;
+    return user[0];
 };
 
-const editUser = async (username, emailAdd, passw, userRole, profileURL, userID) => {
+const updateUser = async (username, emailAdd, passw, userRole, profileURL, userID) => {
+    console.log('Received userID:', userID); // Log the received userID
+
     if (!userID || isNaN(userID)) {
+        console.error("Invalid user ID:", userID); // Log the invalid userID
         throw new Error("Invalid user ID");
     }
 
-    const [result] = await pool.query(`
-        UPDATE users SET username = ?, emailAdd = ?, passw = ?, userRole = ?, profileURL = ? WHERE userID = ?
-    `, [username, emailAdd, passw, userRole, profileURL, userID]);
+    try {
+        const [result] = await pool.query(`
+            UPDATE users SET username = ?, emailAdd = ?, passw = ?, userRole = ?, profileURL = ? WHERE userID = ?
+        `, [username, emailAdd, passw, userRole, profileURL, userID]);
 
-    if (result.affectedRows === 0) {
-        throw new Error("User update failed");
+        if (result.affectedRows === 0) {
+            console.error("User update failed, no rows affected."); // Log if the update failed
+            throw new Error("User update failed");
+        }
+
+        console.log('User update successful, affected rows:', result.affectedRows); // Log success
+        return result;
+    } catch (error) {
+        console.error('Error during user update query:', error); // Log any errors during the query
+        throw new Error('User update failed: ' + error.message);
     }
-
-    return result;
 };
+
+
+
+
 
 const deleteUser = async (userID) => {
     if (!userID || isNaN(userID)) {
@@ -247,7 +324,7 @@ const deleteUser = async (userID) => {
 
     const [result] = await pool.query(`
         DELETE FROM users WHERE userID = ?
-    `, [userID]);
+        `, [userID]);
 
     if (result.affectedRows === 0) {
         throw new Error("User deletion failed");
@@ -256,23 +333,107 @@ const deleteUser = async (userID) => {
     return result;
 };
 
-// Admin and Profile Check
+const loginUser = async (emailAdd, passw) => {
+    try {
+        const [rows] = await pool.query(`
+            SELECT * FROM users WHERE emailAdd = ?
+            `, [emailAdd]);
+
+        if (rows.length === 0) {
+            return null;
+        }
+
+        const user = rows[0];
+        const isPasswordValid = await bcrypt.compare(passw, user.passw);
+
+        if (!isPasswordValid) {
+            return null;
+        }
+
+        return user; // Ensure 'userID' is included in the returned user object
+    } catch (error) {
+        throw new Error('Error during login process: ' + error.message);
+    }
+};
+
+
+
+const registerUser = async ({ username, emailAdd, passw, userRole = 'user', profileURL = null }) => {
+    try {
+        // Encrypt the password using the function from hashPass.js
+        const encryptedPass = await encryptPassword(passw);
+
+        // Add the user to the database
+        const user = await addUser({ username, emailAdd, passw: encryptedPass, userRole, profileURL });
+
+        // Generate a JWT token
+        const token = generateJWT(user);
+
+        return { user, token };
+    } catch (error) {
+        throw new Error('Error registering user: ' + error.message);
+    }
+};
+
 
 const checkRoleStatus = async (userRole) => {
-    const [[{ userRole: role }]] = await pool.query(`
-        SELECT userRole FROM users WHERE userRole = ?
-    `, [userRole]);
+    try {
+        console.log("Checking user role in the database:", userRole);
+        const [[{ userRole: role }]] = await pool.query(`
+            SELECT userRole FROM users WHERE userRole = ?
+        `, [userRole]);
 
-    return role;
+        if (!role) {
+            throw new Error('Role not found in the database.');
+        }
+
+        console.log("Fetched role from DB:", role);
+        return role;
+    } catch (error) {
+        console.error('Error fetching user role:', error.message);
+        throw new Error('Error fetching user role: ' + error.message);
+    }
 };
 
 const checkProfile = async (emailAdd) => {
-    const [userProfile] = await pool.query(`
-        SELECT * FROM users WHERE emailAdd = ?
-    `, [emailAdd]);
+    try {
+        console.log("Checking user profile for:", emailAdd);
+        const [userProfile] = await pool.query(`
+            SELECT * FROM users WHERE emailAdd = ?
+        `, [emailAdd]);
 
-    return userProfile;
+        if (!userProfile || userProfile.length === 0) {
+            throw new Error('User profile not found.');
+        }
+
+        console.log("Fetched user profile:", userProfile);
+        return userProfile[0]; // Assuming only one profile per email
+    } catch (error) {
+        console.error('Error fetching user profile:', error.message);
+        throw new Error('Error fetching user profile: ' + error.message);
+    }
 };
+
+const checkUser = async (emailAdd) => {
+    try {
+        console.log("Checking user password for:", emailAdd);
+        const [[{ passw }]] = await pool.query(`
+            SELECT passw FROM users WHERE emailAdd = ?
+        `, [emailAdd]);
+
+        if (!passw) {
+            throw new Error('Password not found for this user.');
+        }
+
+        console.log("Fetched password from DB for", emailAdd, ":", passw);
+        return passw;
+    } catch (error) {
+        console.error('Error fetching user password:', error.message);
+        throw new Error('Error fetching user password: ' + error.message);
+    }
+};
+
+
 
 export {
     getProducts,
@@ -282,8 +443,9 @@ export {
     addProduct,
     getCart,
     addedInCart,
-    insert,
     addToCart,
+    getAllCarts,
+    insert,
     removeFromCart,
     editCart,
     checkUser,
@@ -292,6 +454,10 @@ export {
     deleteUser,
     getUserByID,
     checkRoleStatus,
-    editUser,
-    checkProfile
+    updateUser,
+    checkProfile,
+    encryptPassword,
+    deleteSpecificItem,
+    loginUser,
+    registerUser
 };

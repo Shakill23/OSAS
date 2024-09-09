@@ -1,22 +1,21 @@
-import { checkRoleStatus } from "../Model/db.js";
+// Middleware to check if the user's role is 'Admin'
+const isRoleEqualToAdmin = (req, res, next) => {
+    const { userID, userRole } = req.user; // Fetch userID and userRole from req.user
 
-const isRoleEquiqToAdmin = async (req, res, next) => {
-
-    // checks the user role in the body
-    const {username, emailAdd, passw, userRole, profileURL} = req.body;
-
-    // function checking the role status
-    const role = await checkRoleStatus(userRole);
-
-    if(role === 'admin'){
-
-        next();
-
-    } else {
-
-        res.sendStatus(403);
-
+    if (!userID) {
+        console.log("UserID is missing in req.user");
+        return res.status(400).send({ msg: 'UserID is missing' });
     }
-} 
 
-export default isRoleEquiqToAdmin;
+    console.log("Verifying role for user with ID:", userID, "and role:", userRole);
+
+    if (userRole && userRole.toLowerCase() === 'admin') {
+        console.log("User is an Admin. Proceeding...");
+        next(); // Allow the request to proceed
+    } else {
+        console.log("Access denied for user role:", userRole);
+        return res.status(403).json({ msg: 'Forbidden: Admin access required' });
+    }
+};
+
+export default isRoleEqualToAdmin;

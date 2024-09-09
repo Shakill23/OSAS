@@ -1,21 +1,20 @@
 import express from 'express';
-import controller from '../Controllers/cartController.js';
-import auth from '../Middleware/verifyJwt.js';  // Import auth middleware
+import cartController from '../Controllers/cartController.js';
+import isRoleEqualToAdmin from '../middleware/roleStatus.js';
 
 const router = express.Router();
 
-// Apply auth middleware to protect cart routes
+// Apply the role-check middleware (auth already applied in index.js)
+router.use(isRoleEqualToAdmin);
 
-router.route('/')
-    .get(auth, controller.allCartItems);  // Only authenticated users can view all cart items
+// Define the route to fetch all carts (for admins)
+router.get('/', cartController.allCarts); // New: Fetch all carts for admins
 
-router.route('/:id')
-    .get(auth, controller.itemsInCart)  // Only authenticated users can view items in their cart
-    .post(auth, controller.addToCartTable)  // Only authenticated users can add items to their cart
-    .patch(auth, controller.editCart)  // Only authenticated users can edit items in their cart
-    .delete(auth, controller.deleteSpecificItem);  // Only authenticated users can delete a specific item from their cart
-
-router.route('/:id/all')
-    .delete(auth, controller.deleteFromCart);  // Only authenticated users can delete all items from their cart
+// Define the cart routes that are accessible only by Admin users
+router.get('/user/:id/carts', cartController.allCartItems);
+router.post('/user/:id/cart', cartController.addToCartTable);
+router.patch('/user/:id/cart/:cartItemId', cartController.editCart);
+router.delete('/user/:id/cart', cartController.deleteFromCart);
+router.delete('/user/:id/cart/:cartItemId', cartController.deleteSpecificItem);
 
 export default router;
