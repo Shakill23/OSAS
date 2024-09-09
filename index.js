@@ -7,7 +7,6 @@ import productsRoute from './Routes/productsRoute.js';
 import cartRoute from './Routes/cartRoute.js';
 import { router as userRoute } from './Routes/userRoute.js';
 
-import { auth } from './Middleware/verifyJwt.js'; // Import authentication middleware
 import authenticate from './Middleware/signToken.js'; // Import token sign middleware
 
 const app = express();
@@ -16,7 +15,7 @@ const PORT = process.env.PORT || 2307;
 app.use(express.static('./Static'));
 
 app.use(cors({
-    origin: 'http://localhost:8080/',
+    origin: 'http://localhost:8080',
     credentials: true
 }));
 
@@ -35,11 +34,10 @@ app.delete('/logout', (req, res) => {
     });
 });
 
-// Apply authentication middleware for routes that need it
-app.use('/products', auth, productsRoute);
-app.use('/carts', auth, cartRoute);
+// Apply routes
+app.use('/products', productsRoute); // No global auth middleware for products
+app.use('/carts', cartRoute);
 app.use('/users', userRoute);
-
 
 // 404 Catcher - After all routes
 app.use((req, res, next) => {
