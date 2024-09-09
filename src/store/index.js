@@ -2,185 +2,172 @@ import { createStore } from 'vuex';
 import axios from 'axios';
 import router from '@/router';
 import swal from 'sweetalert';
-axios.defaults.withCredentials = true
+
+axios.defaults.withCredentials = true;
 
 export default createStore({
   state: {
     products: [],
-    product: [],
+    product: null, // Single product
     users: [],
-    user: [],
-    loggedUser: [],
-    cartState: []
+    user: null, // Logged-in user
+    loggedUser: null, // Current logged user
+    cartState: [], // Cart items
+    isLoading: false // For loading spinner
   },
-  getters: {},
+  getters: {
+    // Add getters to compute derived state or format data for the frontend
+    totalCartAmount: (state) => {
+      return state.cartState.reduce((total, item) => total + item.price * item.quantity, 0);
+    },
+    totalCartQuantity: (state) => {
+      return state.cartState.reduce((total, item) => total + item.quantity, 0);
+    }
+  },
   mutations: {
+    // Product mutations
     accessProductsData(state, payload) {
-      console.log('Mutating products data:', payload);
       state.products = payload;
     },
     accessSingleProduct(state, payload) {
-      console.log('Mutating single product data:', payload);
       state.product = payload;
     },
+    // User mutations
     accessUsers(state, payload) {
-      console.log('Mutating users data:', payload);
       state.users = payload;
     },
     accessUser(state, payload) {
-      console.log('Mutating user data:', payload);
       state.user = payload;
     },
     accessUserIsLogged(state, payload) {
-      console.log('Mutating loggedUser data:', payload);
       state.loggedUser = payload;
     },
-    addProd(state, payload) {
-      console.log('Mutating cartState data:', payload);
+    // Cart mutations
+    addProdToCart(state, payload) {
+      state.cartState.push(payload);
+    },
+    updateCart(state, payload) {
       state.cartState = payload;
+    },
+    clearCart(state) {
+      state.cartState = [];
+    },
+    // Loader mutation
+    setLoading(state, status) {
+      state.isLoading = status;
     }
   },
   actions: {
-    async fetchProducts(context) {
+    async fetchProducts({ commit }) {
       try {
-        console.log('Fetching products...');
+        commit('setLoading', true);
         const res = await axios.get('https://osas-2.onrender.com/products');
-        console.log('Products fetched:', res.data);
-        context.commit('accessProductsData', res.data);
+        commit('accessProductsData', res.data);
       } catch (error) {
-        console.error('Error fetching products:', error);
-        await swal(`Server down or route does not exist`, "try again", "error");
+        swal(`Server down or route does not exist`, "try again", "error");
+      } finally {
+        commit('setLoading', false);
       }
     },
-    async fetchProduct(context, id) {
+    async fetchProduct({ commit }, id) {
       try {
-        console.log(`Fetching product with id: ${id}`);
+        commit('setLoading', true);
         const res = await axios.get(`https://osas-2.onrender.com/products/${id}`);
-        console.log('Product fetched:', res.data);
-        context.commit('accessSingleProduct', res.data);
+        commit('accessSingleProduct', res.data);
       } catch (error) {
-        console.error('Error fetching product:', error);
-        await swal(`${error.response?.data?.msg || 'Product fetch failed'}`, "try again", "error");
+        swal(`${error.response?.data?.msg || 'Product fetch failed'}`, "try again", "error");
+      } finally {
+        commit('setLoading', false);
       }
     },
-    async deleteProduct(context, productID) {
+    async deleteProduct({ dispatch }, productID) {
       try {
-        console.log(`Deleting product with id: ${productID}`);
-        const res = await axios.delete(`https://osas-2.onrender.com/products/${productID}`);
-        console.log('Product deleted:', res.data);
-        await swal(`Deleted product!`, "You have deleted a product", "success");
-        window.location.reload();
+        await axios.delete(`https://osas-2.onrender.com/products/${productID}`);
+        swal(`Deleted product!`, "You have deleted a product", "success");
+        dispatch('fetchProducts'); // Refresh products after delete
       } catch (error) {
-        console.error('Error deleting product:', error);
-        await swal(`Product was not found`, "try again", "error");
+        swal(`Product was not found`, "try again", "error");
       }
     },
-    async SignUser(context, userpayload) {
+    async SignUser({ commit }, userpayload) {
       try {
-        console.log('Signing up user:', userpayload);
-        const res = await axios.post(`https://osas-2.onrender.com/users`, userpayload);
-        console.log('User signed up:', res.data);
-        await swal(`Welcome to W-store ${userpayload.username}!`, "You have successfully created an account", "success");
-        await router.push('/login');
-        window.location.reload();
+        commit('setLoading', true);
+        await axios.post(`https://osas-2.onrender.com/users/register`, userpayload);
+        swal(`Welcome to W-store ${userpayload.username}!`, "You have successfully created an account", "success");
+        router.push('/login');
       } catch (error) {
-        console.error('Error signing up user:', error);
-        await swal(`Invalid information`, "Please try again", "error");
-      }
-    },
-    async loginUser(context, userInfoIsValid) {
-      try {
-        console.log("Logging in user with info:", userInfoIsValid);
-    
-        const res = await axios.post(`https://osas-2.onrender.com/login`, userInfoIsValid);
-        
-        console.log("Login response:", res.data);
-    
-        // Ensure the response has the necessary data
-        if (res.data && res.data.isLogged && res.data.isLogged.userID) {
-          const u = res.data.isLogged;
-    
-          console.log("Logged user:", u);
-    
-          // Setting cookies
-          $cookies.set('jwt', res.data.token);
-          $cookies.set('refreshToken', res.data.refreshToken);
-          $cookies.set('role', res.data.role);
-          $cookies.set('userId', u.userID);
-    
-          // Storing user data in localStorage
-          const user = res.data.isLogged;
-          const storage = JSON.stringify(user);
-          localStorage.setItem('activeUser', storage);
-    
-          console.log("Stored user data in localStorage:", storage);
-    
-          // Successful login
-          await swal(`Welcome back ${u.username}`, "You have logged in successfully", "success");
-    
-          await router.push('/profile');
-          window.location.reload();
-    
+        if (error.response && error.response.status === 400) {
+          swal(`Duplicate email or invalid data`, "Please try again", "error");
         } else {
-          console.error("Login error: Invalid login response structure", res.data);
-          throw new Error('Invalid login response');
+          swal(`Registration failed`, `Error: ${error.message}`, "error");
         }
-    
-      } catch (error) {
-        console.error("Login failed:", error.message || error);
-        await swal('Login failed', "Please try again", "error");
+      } finally {
+        commit('setLoading', false);
       }
     },
-    async logoutUser() {
+    async loginUser({ commit }, userInfo) {
       try {
-        console.log('Logging out user...');
-        const res = await axios.delete(`https://osas-2.onrender.com/logout`);
-        console.log('Logout response:', res.data);
+        commit('setLoading', true);
+        const res = await axios.post(`https://osas-2.onrender.com/login`, userInfo);
+        const u = res.data.isLogged;
+
+        // Set cookies and local storage
+        $cookies.set('jwt', res.data.token);
+        $cookies.set('refreshToken', res.data.refreshToken);
+        $cookies.set('role', res.data.role);
+        $cookies.set('userId', u.userID);
+        localStorage.setItem('activeUser', JSON.stringify(u));
+
+        swal(`Welcome back ${u.username}`, "You have logged in successfully", "success");
+        router.push('/profile');
+      } catch (error) {
+        swal('Login failed', "Incorrect email or password", "error");
+      } finally {
+        commit('setLoading', false);
+      }
+    },
+    async logoutUser({ commit }) {
+      try {
+        commit('setLoading', true);
+        await axios.delete(`https://osas-2.onrender.com/logout`);
         $cookies.remove('jwt');
         $cookies.remove('refreshToken');
         $cookies.remove('role');
         $cookies.remove('userId');
         localStorage.removeItem('activeUser');
-        await swal(`You have ${res.data.msg}`, "Goodbye! come shop soon", "success");
-        await router.push('/');
-        window.location.reload();
+        commit('clearCart'); // Clear cart on logout
+        swal(`You have been logged out!`, "Goodbye! Come shop soon", "success");
+        router.push('/');
       } catch (error) {
-        console.error('Logout error:', error);
-        await swal(`Oops!`, "Please try again", "error");
+        swal(`Oops!`, "Please try again", "error");
+      } finally {
+        commit('setLoading', false);
       }
     },
-    async getUsers(context) {
+    async getUsers({ commit }) {
       try {
-        console.log('Fetching users...');
         const res = await axios.get(`https://osas-2.onrender.com/users`);
-        console.log('Users fetched:', res.data);
-        context.commit('accessUsers', res.data);
+        commit('accessUsers', res.data);
       } catch (error) {
-        console.error('Error fetching users:', error);
-        await swal(`Invalid credentials`, "Please try again", "warning");
+        swal(`Invalid credentials`, "Please try again", "warning");
       }
     },
-    async getUser(context, id) {
+    async getUser({ commit }, id) {
       try {
-        console.log(`Fetching user with id: ${id}`);
         const res = await axios.get(`https://osas-2.onrender.com/users/${id}`);
-        console.log('User fetched:', res.data);
-        context.commit('accessUser', res.data);
+        commit('accessUser', res.data);
       } catch (error) {
         console.error('Error fetching user:', error);
       }
     },
-    async adminAuth(context) {
+    async adminAuth({ commit }) {
       try {
-        console.log('Checking admin authentication...');
         const res = await axios.get(`https://osas-2.onrender.com/users`);
-        console.log('Admin authentication response:', res.data);
-        context.commit('accessUserIsLogged', res.data);
+        commit('accessUserIsLogged', res.data);
       } catch (error) {
         console.error('Admin auth error:', error);
       }
-    },
-    // Continue adding console logs for other actions similarly...
+    }
   },
   modules: {}
 });

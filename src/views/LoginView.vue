@@ -23,7 +23,7 @@
                     <button class="w-100 btn" type="submit" @click="loginUser()">Login</button>
                   </div>
                   <hr class="my-4">
-                  <small>No account?<router-link to="/signup"  class="text-white">Click here to create an account</router-link></small>
+                  <small>No account?<router-link to="/register"  class="text-white">Click here to create an account</router-link></small>
                 <div id="eerTxt"></div>
               </div>
             </div>

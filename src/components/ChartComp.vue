@@ -1,49 +1,64 @@
-<template lang="">
-<canvas id="myChart"></canvas>
+<template>
+  <canvas id="myChart"></canvas>
 </template>
+
 <script setup>
-import { onMounted } from "@vue/runtime-core";
-import {Chart} from "chart.js"
+import { onMounted, onBeforeUnmount } from "vue";
+import { Chart } from "chart.js";
+
+let myChart; // Declare globally for access in both lifecycle hooks
 
 onMounted(() => {
-let myChart = new Chart("myChart",
-{
-  type:"bar",
-  data:{
-    labels:["label","label2"],
-    datasets:[
-      {
-        type:"bar",
-        backgroundColor:["blue","red"],
-        data:[4,3]
+  const ctx = document.getElementById("myChart").getContext("2d");
+  
+  myChart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels: ["Label 1", "Label 2"],
+      datasets: [
+        {
+          label: "Dataset 1",
+          backgroundColor: ["blue", "red"],
+          data: [4, 3],
+        },
+        {
+          label: "Dataset 2",
+          backgroundColor: ["green", "yellow"],
+          data: [2, 1],
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false, // Set to false for better control of responsiveness
+      plugins: {
+        legend: {
+          display: true,
+        },
+        title: {
+          display: true,
+          text: "Custom Chart Title",
+        },
       },
-        //Second Bar (Optional)
-      {
-        type:"bar",
-        data:[2,1],
-        backgroundColor:["green","yellow"]
+      scales: {
+        y: {
+          beginAtZero: true, // Start y-axis from zero
+        },
       },
-    ]
-      },
-      options:{
-          labels: true,
-          responsive:true,
-          maintainAspectRatio:true,
-          plugins:{
-            legend:{
-                display:true
-              },
-              title:{
-                display:true
-              }
-          }
-      }
+    },
+  });
+
+  // Update the chart after rendering
+  myChart.data.datasets[0].data[0] = 5;
+  myChart.update();
 });
 
-//Udate Chart
-myChart.data.datasets[0].data[0] = 5;
-myChart.update();
-})
+// Destroy chart to avoid memory leaks
+onBeforeUnmount(() => {
+  if (myChart) {
+    myChart.destroy();
+  }
+});
 </script>
 <style lang="">
     
