@@ -8,7 +8,7 @@ import {
     loginUser 
 } from '../Model/db.js';
 
-import { generateJWT } from '../middleware/verifyJwt.js'; 
+import { generateJWT } from '../Middleware/verifyJwt.js'; 
 import bcrypt from 'bcrypt';
 
 const getAllUsers = async (req, res) => {
