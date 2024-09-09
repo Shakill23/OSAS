@@ -7,8 +7,8 @@ import productsRoute from './Routes/productsRoute.js';
 import cartRoute from './Routes/cartRoute.js';
 import { router as userRoute } from './Routes/userRoute.js';
 
-import { auth } from './middleware/verifyJwt.js'; // Import authentication middleware
-import authenticate from './middleware/signToken.js'; // Import token sign middleware
+import { auth } from './Middleware/verifyJwt.js'; // Import authentication middleware
+import authenticate from './Middleware/signToken.js'; // Import token sign middleware
 
 const app = express();
 const PORT = process.env.PORT || 2307;

@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { generateJWT } from './verifyJwt.js'; // Ensure correct import
+import { generateJWT } from '../Middleware/verifyJwt.js'; // Ensure correct import
 import jwt from 'jsonwebtoken';
 import { checkUser, checkProfile } from '../Model/db.js'; // Assuming these functions are defined
 
