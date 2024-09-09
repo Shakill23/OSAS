@@ -3,118 +3,148 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OSAS</title>
+    <title>OSAS API Documentation</title>
 </head>
 <body>
 
     <div class="container">
-        <h1>OSAS Api</h1>
+        <h1>OSAS API Documentation</h1>
     </div>
 
-  
-        <div class="dividerOne"></div>
-
+    <div class="dividerOne"></div>
 
     <table>
-        <tr>
-            <td>Functionality :</td>
-            <td>Url link</td>
-            <td>Method</td>
-        </tr>
-        <tr>
-            <td>AddToCart :</td>
-            <td>http://localhost:3023/cart/:productID<b>?userID=3</b></td>
-            <td>post/id?userID=?</td>
-        </tr>
-        <tr>
-            <td>delFromCart :</td>
-            <td>http://localhost:3023/cart/?userID=</td>
-            <td>Delete</td>
-        </tr>
-        <tr>
-            <td>editCart :</td>
-            <td>http://localhost:3023/cart/edit/:cartID</td>
-            <td>Delete</td>
-        </tr>
-        <tr>
-            <td>Login :</td>
-            <td>http://localhost:3023/login</td>
-            <td>Post</td>
-        </tr>
-        <tr>
-            <td>Logout :</td>
-            <td>http://localhost:3023/logout</td>
-            <td>delete</td>
-        </tr>
-        <tr>
-            <td>singleProduct :</td>
-            <td>http://localhost:3023/products/:id</td>
-            <td>Get</td>
-        </tr>
-        <tr>
-            <td>getAllProducts :</td>
-            <td>http://localhost:3023/products</td>
-            <td>Get</td>
-        </tr>
-        <tr>
-            <td>deleteProduct :</td>
-            <td>http://localhost:3023/products/:id</td>
-            <td>Delete</td>
-        </tr>
-        <tr>
-            <td>editProduct :</td>
-            <td>http://localhost:3023/products/:id</td>
-            <td>Patch</td>
-        </tr>
-        <tr>
-            <td>getAllUsers :</td>
-            <td>http://localhost:3023/users</td>
-            <td>Get</td>
-        </tr>
-        <tr>
-            <td>getUser :</td>
-            <td>http://localhost:3023/users/:id</td>
-            <td>Get</td>
-        </tr>
-        <tr>
-            <td>editUser :</td>
-            <td>http://localhost:3023/users/:id</td>
-            <td>Patch</td>
-        </tr>
-        <tr>
-            <td>addUser :</td>
-            <td>http://localhost:3023/users</td>
-            <td>Post</td>
-        </tr>
-        <tr>
-            <td>deleteUser :</td>
-            <td>http://localhost:3023/users/:id</td>
-            <td>Delete</td>
-        </tr>
+        <thead>
+            <tr>
+                <th>Functionality</th>
+                <th>URL Link</th>
+                <th>Method</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Cart Routes -->
+            <tr>
+                <td>Fetch all Carts (Admin only)</td>
+                <td>http://localhost:2307/carts</td>
+                <td>GET</td>
+            </tr>
+            <tr>
+                <td>Get Cart Items for User</td>
+                <td>http://localhost:2307/carts/user/:id/carts</td>
+                <td>GET</td>
+            </tr>
+            <tr>
+                <td>Add to Cart</td>
+                <td>http://localhost:2307/carts/user/:id/cart</td>
+                <td>POST</td>
+            </tr>
+            <tr>
+                <td>Edit Cart Item</td>
+                <td>http://localhost:2307/carts/user/:id/cart/:cartItemId</td>
+                <td>PATCH</td>
+            </tr>
+            <tr>
+                <td>Delete All Items from Cart</td>
+                <td>http://localhost:2307/carts/user/:id/cart</td>
+                <td>DELETE</td>
+            </tr>
+            <tr>
+                <td>Delete Specific Item from Cart</td>
+                <td>http://localhost:2307/carts/user/:id/cart/:cartItemId</td>
+                <td>DELETE</td>
+            </tr>
+
+            <!-- User Routes -->
+            <tr>
+                <td>Get All Users</td>
+                <td>http://localhost:2307/users</td>
+                <td>GET</td>
+            </tr>
+            <tr>
+                <td>Get User by ID</td>
+                <td>http://localhost:2307/users/:id</td>
+                <td>GET</td>
+            </tr>
+            <tr>
+                <td>Register User</td>
+                <td>http://localhost:2307/users/register</td>
+                <td>POST</td>
+            </tr>
+            <tr>
+                <td>Login User</td>
+                <td>http://localhost:2307/users/login</td>
+                <td>POST</td>
+            </tr>
+            <tr>
+                <td>Edit User</td>
+                <td>http://localhost:2307/users/:id</td>
+                <td>PATCH</td>
+            </tr>
+            <tr>
+                <td>Delete User</td>
+                <td>http://localhost:2307/users/:id</td>
+                <td>DELETE</td>
+            </tr>
+
+            <!-- Product Routes -->
+            <tr>
+                <td>Get All Products</td>
+                <td>http://localhost:2307/products</td>
+                <td>GET</td>
+            </tr>
+            <tr>
+                <td>Get Product by ID</td>
+                <td>http://localhost:2307/products/:id</td>
+                <td>GET</td>
+            </tr>
+            <tr>
+                <td>Add Product</td>
+                <td>http://localhost:2307/products</td>
+                <td>POST</td>
+            </tr>
+            <tr>
+                <td>Edit Product</td>
+                <td>http://localhost:2307/products/:id</td>
+                <td>PATCH</td>
+            </tr>
+            <tr>
+                <td>Delete Product</td>
+                <td>http://localhost:2307/products/:id</td>
+                <td>DELETE</td>
+            </tr>
+        </tbody>
     </table>
 
     <style>
-        body{
+        body {
             display: flex;
             justify-content: center;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
+            font-family: Arial, sans-serif;
         }
-        .container{
-            display: flex;
-            justify-content: center;
+        .container {
+            text-align: center;
+            margin-bottom: 20px;
         }
-        .dividerOne{
+        .dividerOne {
             height: 5px;
-            width: 30%;
+            width: 50%;
             background: lightgreen;
-            display: flex;
-            justify-content: center;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
-        td {
+        table {
+            border-collapse: collapse;
+            width: 80%;
+        }
+        th, td {
             border: 1px solid black;
+            padding: 10px;
+            text-align: left;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
         }
     </style>
 </body>
