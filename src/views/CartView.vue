@@ -65,7 +65,7 @@
 </template>
 
 <script>
-import UserProfile from './UserProfile.vue'
+import UserProfile from './UserProfile.vue';
 
 export default {
     data() {
@@ -99,16 +99,20 @@ export default {
     },
     methods: {
         getCart() {
-            this.$store.dispatch('userCart');
+            this.$store.dispatch('userCart')
+                .catch(err => {
+                    console.error('Error fetching cart:', err);
+                });
         }, 
         deleteFromCart(productID) {
-            this.$store.dispatch('removeFromCart', productID);
+            this.$store.dispatch('removeFromCart', productID)
+                .catch(err => {
+                    console.error('Error removing from cart:', err);
+                });
         },
         async addToFavs(favz) {
-            const storage = this.Userfavourites;
-            storage.push(favz);
-            const data = JSON.stringify(storage);
-            localStorage.setItem('favs', data);
+            this.Userfavourites.push(favz);
+            localStorage.setItem('favs', JSON.stringify(this.Userfavourites));
             await swal(`You just liked a product`, `The product you liked has been saved`, "success");
             this.$forceUpdate();  // Forces Vue to re-render the favourites without refreshing the page
         },
@@ -122,7 +126,7 @@ export default {
     mounted() {
         this.getCart();
     }
-}
+};
 </script>
 
 <style scoped>

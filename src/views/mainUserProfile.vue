@@ -4,9 +4,10 @@
             <div v-if="user" id="user" class="px-3">
                 <div class="card mx-2 shadow" style="width: 42.4rem;" id="container">
                     <div class="d-flex">
-                        <p id="XYX" class="card-text small mx-2 my-1"><i class="fa-regular fa-circle-user fa-lg" style="color: #04ff00;"></i> Active</p>
+                        <p id="XYX" class="card-text small mx-2 my-1">
+                            <i class="fa-regular fa-circle-user fa-lg" style="color: #04ff00;"></i> Active
+                        </p>
                     </div>
-
                     <img :src="user.profileURL" class="card-img-top pt-2" id="objectImg" :alt="user.username">
                     <div class="card-body">
                         <h5 class="card-title fs-4">{{ user.username }}</h5>
@@ -86,16 +87,21 @@ export default {
             username: '',
             profileURL: '',
             cartItems: [], // Store the cart items
-        }
+        };
     },
     methods: {
         // Fetch the logged-in user details
         userIsLogged() {
-            const users = JSON.parse(localStorage.getItem("activeUser")) || [];
+            let users = JSON.parse(localStorage.getItem("activeUser")) || [];
+            if (!Array.isArray(users)) {
+                users = [users]; // Convert to array if it's a single object
+            }
             this.user = users.find(user => user.userID === this.userID);
             if (this.user) {
                 this.username = this.user.username;
                 this.profileURL = this.user.profileURL;
+            } else {
+                console.error('No matching user found');
             }
         },
         // Fetch cart details from store
@@ -109,12 +115,12 @@ export default {
                 });
         },
         // Update user profile
-        updateUser(userID) {
+        updateUser() {
             const updatedUser = {
                 userID: this.userID,
                 username: this.username,
                 profileURL: this.profileURL
-            }
+            };
             this.$store.dispatch('updateUser', updatedUser)
                 .then(() => {
                     swal('Profile Updated', 'Your changes have been saved!', 'success');
@@ -129,8 +135,9 @@ export default {
         this.userIsLogged();
         this.getCart();
     }
-}
+};
 </script>
+
 
 
 <style scoped>

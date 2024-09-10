@@ -16,7 +16,6 @@ export default createStore({
     isLoading: false // For loading spinner
   },
   getters: {
-    // Add getters to compute derived state or format data for the frontend
     totalCartAmount: (state) => {
       return state.cartState.reduce((total, item) => total + item.price * item.quantity, 0);
     },
@@ -34,7 +33,12 @@ export default createStore({
     },
     // User mutations
     accessUsers(state, payload) {
-      state.users = payload;
+      if (Array.isArray(payload)) {
+        state.users = payload;
+      } else {
+        console.error('Error: users data is not an array', payload);
+        state.users = [];
+      }
     },
     accessUser(state, payload) {
       state.user = payload;
@@ -64,7 +68,7 @@ export default createStore({
         const res = await axios.get('https://osas-2.onrender.com/products');
         commit('accessProductsData', res.data);
       } catch (error) {
-        swal(`Server down or route does not exist`, "try again", "error");
+        swal(`Server down or route does not exist`, "Try again", "error");
       } finally {
         commit('setLoading', false);
       }
@@ -75,7 +79,7 @@ export default createStore({
         const res = await axios.get(`https://osas-2.onrender.com/products/${id}`);
         commit('accessSingleProduct', res.data);
       } catch (error) {
-        swal(`${error.response?.data?.msg || 'Product fetch failed'}`, "try again", "error");
+        swal(`${error.response?.data?.msg || 'Product fetch failed'}`, "Try again", "error");
       } finally {
         commit('setLoading', false);
       }
@@ -86,7 +90,7 @@ export default createStore({
         swal(`Deleted product!`, "You have deleted a product", "success");
         dispatch('fetchProducts'); // Refresh products after delete
       } catch (error) {
-        swal(`Product was not found`, "try again", "error");
+        swal(`Product was not found`, "Try again", "error");
       }
     },
     async SignUser({ commit }, userpayload) {
@@ -120,6 +124,7 @@ export default createStore({
 
         swal(`Welcome back ${u.username}`, "You have logged in successfully", "success");
         router.push('/profile');
+        commit('accessUserIsLogged', u); // Set the logged user in state
       } catch (error) {
         swal('Login failed', "Incorrect email or password", "error");
       } finally {
@@ -147,6 +152,7 @@ export default createStore({
     async getUsers({ commit }) {
       try {
         const res = await axios.get(`https://osas-2.onrender.com/users`);
+        console.log('Fetched users:', res.data);
         commit('accessUsers', res.data);
       } catch (error) {
         swal(`Invalid credentials`, "Please try again", "warning");
@@ -163,7 +169,7 @@ export default createStore({
     async adminAuth({ commit }) {
       try {
         const res = await axios.get(`https://osas-2.onrender.com/users`);
-        commit('accessUserIsLogged', res.data);
+        commit('accessUserIsLogged', res.data.isLogged); // Ensure response is correctly handled
       } catch (error) {
         console.error('Admin auth error:', error);
       }
