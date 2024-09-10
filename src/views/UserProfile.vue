@@ -1,35 +1,37 @@
 <template>
     <div id="box">
-        <div v-for="user in userIsLogged()" v-bind:key="user" id="user">
+        <div v-if="activeUser" v-bind:key="activeUser.userID" id="user">
             <div>
-                <img :src="user.profileURL" :alt="user.username" class="img-fluid rounded-5 shadow" height="300" width="300">
+                <img :src="activeUser.profileURL" :alt="activeUser.username" class="img-fluid rounded-5 shadow" height="300" width="300">
             </div>
             <div id="userCol" class="container-fluid fw-bold">
                 <div class="text-start">
                     <span id="text">User name:</span>
-                    {{ user.username }}
+                    {{ activeUser.username }}
                 </div>
                 <div class="text-start">
                     <span id="text">Email address:</span>
-                    {{ user.emailAdd }}
+                    {{ activeUser.emailAdd }}
                 </div>
             </div>
         </div>
+        <div v-else>
+            <p>No active user found.</p>
+        </div>
     </div>
 </template>
+
 <script>
 export default {
-    methods : {
-        userIsLogged(){
-            let users = JSON.parse(localStorage.getItem("activeUser")) || [];
-            return users
+    computed: {
+        activeUser() {
+            let users = JSON.parse(localStorage.getItem("activeUser")) || null;
+            return users ? users[0] : null;
         }
-    },
-    mounted() {
-        this.userIsLogged()
-    },
+    }
 }
 </script>
+
 <style scoped>
     #box{
         display: flex;

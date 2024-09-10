@@ -1,8 +1,7 @@
 <template>
-
     <div class="mb-4" id="boxLg">
         <div id="box" class="mt-5 pt-5">
-            <div v-for="user in userIsLogged()" v-bind:key="user" id="user" class="px-3">
+            <div v-if="user" id="user" class="px-3">
                 <div class="card mx-2 shadow" style="width: 42.4rem;" id="container">
                     <div class="d-flex">
                         <p id="XYX" class="card-text small mx-2 my-1"><i class="fa-regular fa-circle-user fa-lg" style="color: #04ff00;"></i> Active</p>
@@ -16,17 +15,17 @@
                     <div class="container">
                         <div class="input-group flex-nowrap mb-2">
                             <span class="input-group-text" id="addon-wrapping">Username</span>
-                            <input type="text" class="form-control" placeholder="user_name" aria-label="Username" aria-describedby="addon-wrapping" v-model="username">
-                          </div>
-                          <div class="input-group flex-nowrap mb-2">
-                             <span class="input-group-text" id="addon-wrapping">Profile img</span>
-                             <input type="text" class="form-control" placeholder="profileURL" aria-label="Username" aria-describedby="addon-wrapping" v-model="profileURL">
-                          </div>
-                          <div class="input-group flex-nowrap mb-2">
-                            <span class="input-group-text" id="addon-wrapping">Email add</span>
-                            <input type="text" class="form-control" placeholder="emailAdd" aria-label="Email" aria-describedby="addon-wrapping" v-model="user.emailAdd" readonly>
-                          </div>
-                          <div class="d-flex gap-2 justify-content-center my-2 col-lg-6 mx-auto">
+                            <input type="text" class="form-control" placeholder="Username" v-model="username">
+                        </div>
+                        <div class="input-group flex-nowrap mb-2">
+                            <span class="input-group-text" id="addon-wrapping">Profile img</span>
+                            <input type="text" class="form-control" placeholder="Profile URL" v-model="profileURL">
+                        </div>
+                        <div class="input-group flex-nowrap mb-2">
+                            <span class="input-group-text" id="addon-wrapping">Email</span>
+                            <input type="text" class="form-control" placeholder="Email" v-model="user.emailAdd" readonly>
+                        </div>
+                        <div class="d-flex gap-2 justify-content-center my-2 col-lg-6 mx-auto">
                             <router-link to="/products" class="btn" id="button">My shop</router-link>
                             <button type="button" class="btn btn-primary" id="button" @click="updateUser(user.userID)">Save my changes</button>
                             <router-link to="/admin" class="btn" id="button" v-if="$cookies.get('role') === 'admin'">Manage website</router-link>
@@ -35,88 +34,105 @@
                 </div>
             </div>
         </div>
-        <div id="square">
-            <div class="mt-5 pt-5">
 
-                <div id="userActivity" class="">
-                    <div class="card mx-5 shadow" id="media">
-                        <h5 class="card-header text-start">Subscriptions</h5>
-                        <div class="card-body">
-                            <p class="card-text text-start"><i class="fa-solid fa-truck-fast fa-lg mx-2" style="color: #FFD43B;"></i> Super Shipping</p>
-                            <p class="card-text text-start"><i class="fa-regular fa-star fa-lg mx-2" style="color: #FFD43B;"></i> Premium client</p>
-                            <p class="card-text text-start"><i class="fa-solid fa-w fa-lg mx-2" style="color: #B197FC;"></i> W-store ULTRA</p>
-                            <hr />
-                            <p class="card-text text-center text-black-50">These are your lifetime subscriptions at W-store inc. these subscriptions are given to users as a Thank you! for choosing us</p>
-                        </div>
-                    </div>
-                    <div class="card mx-5 shadow mt-3" id="media">
-                        <h5 class="card-header text-start">Manage cart</h5>
-
-                        <div class="small" v-if="$store.state.cartState.length > 0">
-                            scroll here <i class="fa-solid fa-arrow-down fa-sm" style="color: #000000;"></i>
-                        </div>
-                        <div class="small" v-else>
-                            <router-link to='/cart'>nothing in cart</router-link>
-                        </div>
-
-                        <div id="overflow">
-
-                            <div class="card-body" v-for="cart in $store.state.cartState" v-bind:key="cart.prodID">
-                                <p class="card-text text-start fw-bold">{{ cart.productName }}</p>
-                                <p class="card-text text-start"><i class="fa-solid fa-credit-card fa-lg" style="color: #B197FC;"></i> Premium client</p>
-                                <p class="card-text text-start"><i class="fa-solid fa-truck-fast fa-lg" style="color: #FFD43B;"></i> 1 day shipping</p>
-                            </div>
-
-                        </div>
-                        <div class="d-flex justify-content-center">
-                            <router-link to='/cart' class="btn bg-black text-white w-50 mb-1"><span class="quan">{{ $store.state.cartState.length }}</span> items in cart</router-link>
-                        </div>
-
+        <!-- Subscriptions and Cart -->
+        <div id="square" class="mt-5 pt-5">
+            <div id="userActivity">
+                <div class="card mx-5 shadow" id="media">
+                    <h5 class="card-header text-start">Subscriptions</h5>
+                    <div class="card-body">
+                        <p class="card-text text-start"><i class="fa-solid fa-truck-fast fa-lg mx-2" style="color: #FFD43B;"></i> Super Shipping</p>
+                        <p class="card-text text-start"><i class="fa-regular fa-star fa-lg mx-2" style="color: #FFD43B;"></i> Premium client</p>
+                        <p class="card-text text-start"><i class="fa-solid fa-w fa-lg mx-2" style="color: #B197FC;"></i> W-store ULTRA</p>
+                        <hr />
+                        <p class="card-text text-center text-black-50">These are your lifetime subscriptions at W-store inc. These subscriptions are given to users as a Thank you! for choosing us</p>
                     </div>
                 </div>
-                
+
+                <!-- Cart Section -->
+                <div class="card mx-5 shadow mt-3" id="media">
+                    <h5 class="card-header text-start">Manage cart</h5>
+
+                    <div class="small" v-if="cartItems.length > 0">
+                        Scroll here <i class="fa-solid fa-arrow-down fa-sm"></i>
+                    </div>
+                    <div class="small" v-else>
+                        <router-link to='/cart'>Nothing in cart</router-link>
+                    </div>
+
+                    <div id="overflow">
+                        <div class="card-body" v-for="cart in cartItems" :key="cart.prodID">
+                            <p class="card-text text-start fw-bold">{{ cart.productName }}</p>
+                            <p class="card-text text-start"><i class="fa-solid fa-credit-card fa-lg" style="color: #B197FC;"></i> Premium client</p>
+                            <p class="card-text text-start"><i class="fa-solid fa-truck-fast fa-lg" style="color: #FFD43B;"></i> 1 day shipping</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <router-link to='/cart' class="btn bg-black text-white w-50 mb-1"><span class="quan">{{ cartItems.length }}</span> items in cart</router-link>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </template>
+
 <script>
 export default {
-    data(){
+    data() {
         return {
-            userID : $cookies.get('userId'),
-            username : '',
-            emailAdd : '',
-            passw : '',
-            userRole : '',
-            profileURL : '',
+            userID: this.$cookies.get('userId'),
+            user: null, // Store the logged-in user info here
+            username: '',
+            profileURL: '',
+            cartItems: [], // Store the cart items
         }
     },
-    methods : {
-        userIsLogged(){
-            let users = JSON.parse(localStorage.getItem("activeUser")) || [];
-            return users
+    methods: {
+        // Fetch the logged-in user details
+        userIsLogged() {
+            const users = JSON.parse(localStorage.getItem("activeUser")) || [];
+            this.user = users.find(user => user.userID === this.userID);
+            if (this.user) {
+                this.username = this.user.username;
+                this.profileURL = this.user.profileURL;
+            }
         },
-        getCart(){
-            this.$store.dispatch('userCart');
+        // Fetch cart details from store
+        getCart() {
+            this.$store.dispatch('userCart')
+                .then(cartItems => {
+                    this.cartItems = cartItems;
+                })
+                .catch(err => {
+                    console.error('Failed to fetch cart', err);
+                });
         },
-        updateUser(userID){
-          let userObjX = {
-            userID : this.userID,
-            username : this.username,
-            emailAdd : this.emailAdd,
-            passw : this.passw,
-            userRole : this.userRole,
-            profileURL : this.profileURL
-          }
-          this.$store.dispatch('updateUser', userObjX);
-        },
+        // Update user profile
+        updateUser(userID) {
+            const updatedUser = {
+                userID: this.userID,
+                username: this.username,
+                profileURL: this.profileURL
+            }
+            this.$store.dispatch('updateUser', updatedUser)
+                .then(() => {
+                    swal('Profile Updated', 'Your changes have been saved!', 'success');
+                })
+                .catch(err => {
+                    swal('Update Failed', 'Unable to update your profile', 'error');
+                    console.error('Update error:', err);
+                });
+        }
     },
     mounted() {
         this.userIsLogged();
         this.getCart();
-    },
+    }
 }
 </script>
+
+
 <style scoped>
     #boxLg{
         display: flex;

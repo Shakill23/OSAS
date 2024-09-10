@@ -1,57 +1,77 @@
 <template>
-    <div class="" id="formBody">
-        <div class="container col-xl-10 col-xxl-8 px-4 py-5">
-            <div class="row align-items-center g-lg-5 py-5">
+  <div class="" id="formBody">
+      <div class="container col-xl-10 col-xxl-8 px-4 py-5">
+          <div class="row align-items-center g-lg-5 py-5">
               <div class="col-md-10 mx-auto col-lg-5 py-5" id="form">
                   <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" v-model="emailAdd">
-                    <label for="floatingEmail">Email address</label>
+                      <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" v-model="emailAdd">
+                      <label for="floatingEmail">Email address</label>
                   </div>
                   <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password" v-model="passw">
-                    <label for="floatingPassword">Password</label>
+                      <input type="password" class="form-control" id="floatingPassword" placeholder="Password" v-model="passw">
+                      <label for="floatingPassword">Password</label>
                   </div>
-                  <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="floatingRole" placeholder="Role" v-model="userRole" disabled>
-                    <label for="floatingRole">Identity code</label>
+
+                  <!-- Optional role input for specific admin email -->
+                  <div class="form-floating mb-3" v-if="isAdminEmail">
+                      <input type="text" class="form-control" id="floatingRole" placeholder="Specify your role to access as admin" v-model="userRole">
+                      <label for="floatingRole">Specify your role</label>
                   </div>
-                  <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingRole" placeholder="Specify your role to access as admin" v-model="userRole" v-if="this.emailAdd === 'JD1@gmail.com'">
-                    <label for="floatingRole" v-if="this.emailAdd === 'JD1@gmail.com'">Specify your role to access as admin</label>
-                  </div>
+
                   <div class="d-flex gap-1 mt-2">
-                    <button class="w-100 btn" type="submit" @click="loginUser()">Login</button>
+                      <button class="w-100 btn btn-primary" type="submit" @click="loginUser" :disabled="isDisabled">Login</button>
                   </div>
+
                   <hr class="my-4">
-                  <small>No account?<router-link to="/register"  class="text-white">Click here to create an account</router-link></small>
-                <div id="eerTxt"></div>
+                  <small>No account? <router-link to="/register" class="text-white">Click here to create an account</router-link></small>
+
+                  <div v-if="errorMessage" id="eerTxt" class="text-danger mt-2">{{ errorMessage }}</div>
               </div>
-            </div>
           </div>
-    </div>
+      </div>
+  </div>
 </template>
+
 <script>
 export default {
-
-    data(){
+  data() {
       return {
-        userID : null,
-        username : '',
-        emailAdd : '',
-        passw : '',
-        userRole : 'user',
-        profileURL : ''
+          userID: null,
+          username: '',
+          emailAdd: '',
+          passw: '',
+          userRole: 'user',
+          profileURL: '',
+          errorMessage: '' // For error messages
+      };
+  },
+  computed: {
+      // Check if email is the admin's email
+      isAdminEmail() {
+          return this.emailAdd === 'JD1@gmail.com';
+      },
+      // Disable login button if form is incomplete
+      isDisabled() {
+          return !this.emailAdd || !this.passw;
       }
-    },
-    methods : {
-      loginUser(){
-        // console.log(this.$data.username)
-        this.$store.dispatch('loginUser', this.$data)
+  },
+  methods: {
+      async loginUser() {
+          try {
+              // Dispatch login action to the store
+              await this.$store.dispatch('loginUser', this.$data);
+              // Optional success feedback (e.g., redirect or alert)
+              await swal('Login Successful', 'Welcome back!', 'success');
+          } catch (error) {
+              // Handle login failure
+              this.errorMessage = 'Invalid credentials, please try again.';
+              console.error('Login error:', error);
+          }
       }
-    }
-    
+  }
 }
 </script>
+
 <style scoped>
 
 #formBody {
