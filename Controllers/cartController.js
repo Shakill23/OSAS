@@ -26,8 +26,13 @@ const cartController = {
     // All users can access their cart items
     allCartItems: async (req, res) => {
         try {
-            const userProfile = await checkProfile(req.user.emailAdd);
-            const cartItems = await getCart(userProfile.userID);
+            const userId = req.params.id; // Use the user ID passed in the route
+            const cartItems = await getCart(userId); // Fetch cart based on userID
+            
+            if (!cartItems || cartItems.length === 0) {
+                return res.status(404).json({ msg: 'No cart items found for this user.' });
+            }
+    
             return res.status(200).json({ products: cartItems });
         } catch (error) {
             return res.status(500).json({ msg: "Unable to retrieve cart items. Please try again later." });
