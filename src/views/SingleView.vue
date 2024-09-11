@@ -1,13 +1,13 @@
 <template lang="">
     <div id="cardBody">
-        <div v-for="product of $store.state.product" v-bind:key="product.product_id">
+        <div v-for="product of $store.state.product" v-bind:key="product.productID">
             <div id="isoParent" class="container">
                 <div id="isolatedDivOne" class="d-flex justify-content-center">
-                     <img :src="product.product_img" :alt="product.product_name" class="img img-fluid" id="imgProd"/>
+                     <img :src="product.productURL" :alt="product.productName" class="img img-fluid" id="imgProd"/>
                 </div>
                 <div id="isolatedDivTwo" class="my-5 py-5">
-                    <h1 class="fw-bold">{{ product.product_name }}</h1>
-                    <div class="container fw-normal">{{ product.product_desc }}</div>
+                    <h1 class="fw-bold">{{ product.productName }}</h1>
+                    <div class="container fw-normal">{{ product.productDesc }}</div>
                     <div id="stars">
                         <div class="rating">
                             <input value="5" name="rate" id="star5" type="radio">
@@ -22,11 +22,11 @@
                             <label title="text" for="star1"></label>
                           </div>
                     </div>
-                    <h3 class="text-center mx-2 px-1 text-decoration-underline">Price: R{{ product.product_price }}</h3>
+                    <h3 class="text-center mx-2 px-1 text-decoration-underline">Price: R{{ product.amount }}</h3>
                     <hr class="my-3 mx-3"/>
                     
                     
-                    <addToCartBtn @click="addToCart(product.product_id)"/>
+                    <addToCartBtn @click="addToCart(product.productID)"/>
                 </div>
             </div>
         </div>
@@ -39,11 +39,11 @@ export default {
         addToCartBtn
     },
     methods : {
-        fetchProduct(product_id){
-            this.$store.dispatch('fetchProduct', product_id)
+        fetchProduct(productID){
+            this.$store.dispatch('fetchProduct', productID)
         },
-        addToCart(product_id, user_id){
-            this.$store.dispatch('addToCart', product_id, user_id)
+        addToCart(productID, userID){
+            this.$store.dispatch('addToCart', productID, userID)
         }
     }
 }

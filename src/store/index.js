@@ -40,7 +40,7 @@ export default createStore({
     async fetchProducts(context){
       try {
 
-        const res = await axios.get('https://w-store-api.onrender.com/products')
+        const res = await axios.get('https://osas-3.onrender.com/products')
 
         console.log(res.data)
 
@@ -58,7 +58,7 @@ export default createStore({
 
       try {
 
-        const res = await axios.get(`https://w-store-api.onrender.com/products/${id}`)
+        const res = await axios.get(`https://osas-3.onrender.com/products/${id}`)
       
         context.commit('accessSingleProduct', res.data)
 
@@ -66,17 +66,17 @@ export default createStore({
 
         console.error('error has occurred')
 
-        const res = await axios.get(`https://w-store-api.onrender.com/products/${id}`)
+        const res = await axios.get(`https://osas-3.onrender.com/products/${id}`)
 
         await swal(`${res.data.msg}`, "try again", "error");
 
       }
 
     },
-    async deleteProduct(context, product_id){
+    async deleteProduct(context, productID){
 
       try {
-        const res = await axios.delete(`https://w-store-api.onrender.com/products/${product_id}`);
+        const res = await axios.delete(`https://osas-3.onrender.com/products/${productID}`);
 
         await swal(`Deleted product!`, "You have deleted a product", "success");
 
@@ -92,9 +92,9 @@ export default createStore({
     async SignUser(context, userpayload){
 
       try {
-        const res = await axios.post(`https://w-store-api.onrender.com/users`, userpayload)
+        const res = await axios.post(`https://osas-3.onrender.com/users`, userpayload)
 
-        await swal(`Welcome to W-store ${userpayload.user_profile}!`, "You have successfully created an acccount", "success");
+        await swal(`Welcome to W-store ${userpayload.username}!`, "You have successfully created an account", "success");
 
         await router.push('/login')
 
@@ -109,46 +109,37 @@ export default createStore({
       }
 
     },
-    async loginUser(context, userInfoIsValid){
-
+    async loginUser(context, userInfoIsValid) {
       try {
-
-        const res = await axios.post(`https://w-store-api.onrender.com/login`, userInfoIsValid)
-        
-        $cookies.set('jwt',res.data.token);
-
-        $cookies.set('refreshToken',res.data.refreshToken);
-
+        const res = await axios.post(`https://osas-3.onrender.com/login`, userInfoIsValid);
+    
+        $cookies.set('jwt', res.data.token);
+        $cookies.set('refreshToken', res.data.refreshToken);
         $cookies.set('role', res.data.role);
-
-        const [u] = res.data.isLogged
-
-        $cookies.set('userId', u.user_id)
-        
+    
+        const [u] = res.data.isLogged; // Destructure the logged user
+    
+        $cookies.set('userId', u.userID);
+    
         const user = res.data.isLogged;
-        
-        const storage = JSON.stringify(user)
-        
-        localStorage.setItem('activeUser', storage)
-        
-        await swal(`Welcome back ${u.user_profile}`, "You have logged in successfully", "success");
-
-        await router.push('/profile')
-        
-        window.location.reload()
-
+        const storage = JSON.stringify(user);
+        localStorage.setItem('activeUser', storage);
+    
+        await swal(`Welcome back ${u.username}`, "You have logged in successfully", "success");
+    
+        await router.push('/profile');
+    
+        window.location.reload();
       } catch (error) {
-
-        await swal(`Hi ${u.user_profile} your details are incorrect`, "Please try again", "error");
-
+        // Ensure the error block doesn't use `u` when it's not defined
+        await swal(`Login failed`, "Incorrect details or server error", "error");
       }
-
     },
     async logoutUser(){
 
       try {
         
-        const res = await axios.delete(`https://w-store-api.onrender.com/logout`)
+        const res = await axios.delete(`https://osas-3.onrender.com/logout`)
 
         $cookies.remove('jwt')
   
@@ -177,7 +168,7 @@ export default createStore({
     async getUsers(context){
       try {
 
-        const res = await axios.get(`https://w-store-api.onrender.com/users`)
+        const res = await axios.get(`https://osas-3.onrender.com/users`)
 
         context.commit('accessUsers', res.data)
 
@@ -197,7 +188,7 @@ export default createStore({
 
       try {
 
-        const res = await axios.get(`https://w-store-api.onrender.com/users/${id}`);
+        const res = await axios.get(`https://osas-3.onrender.com/users/${id}`);
 
         context.commit('accessUser', res.data);
 
@@ -213,7 +204,7 @@ export default createStore({
 
       try {
 
-        const res = await axios.get(`https://w-store-api.onrender.com/users`)
+        const res = await axios.get(`https://osas-3.onrender.com/users`)
 
         console.log(res.data)
 
@@ -226,10 +217,10 @@ export default createStore({
       }
     },
 
-    async deleteUser(context, user_id){
+    async deleteUser(context, userID){
       try {
 
-        const res = await axios.delete(`https://w-store-api.onrender.com/users/${user_id}`);
+        const res = await axios.delete(`https://osas-3.onrender.com/users/${userID}`);
 
         await swal(`Successfully deleted`, `You have successfuly deleted`, "success");
       
@@ -243,9 +234,9 @@ export default createStore({
     async updateUser(context, update){
 
       try {
-        const res = await axios.patch(`https://w-store-api.onrender.com/users/${update.user_id}`, update);
+        const res = await axios.patch(`https://osas-3.onrender.com/users/${update.userID}`, update);
 
-        await swal(`Successfully updated`, `You have successfuly updated  ${res.data.user_profile}`, "success");
+        await swal(`Successfully updated`, `You have successfuly updated  ${res.data.username}`, "success");
 
         window.location.reload();
 
@@ -259,9 +250,9 @@ export default createStore({
 
     async addNewUser(context, adminPayload){
       try {
-        const res = await axios.post(`https://w-store-api.onrender.com/users`, adminPayload);
+        const res = await axios.post(`https://osas-3.onrender.com/users`, adminPayload);
 
-        await swal(`Successfully added`, `You have successfuly added ${res.data.product_name} to database`, "success");
+        await swal(`Successfully added`, `You have successfuly added ${res.data.productName} to database`, "success");
 
         window.location.reload()
 
@@ -275,9 +266,9 @@ export default createStore({
     async updateProducts(context, update){
       try {
 
-        const res = await axios.patch(`https://w-store-api.onrender.com/products/${update.product_id}`, update);
+        const res = await axios.patch(`https://osas-3.onrender.com/products/${update.productID}`, update);
 
-        await swal(`Successfully updated`, `You have successfuly updated product no.${update.product_id}`, "success");
+        await swal(`Successfully updated`, `You have successfuly updated product no.${update.productID}`, "success");
 
         window.location.reload();
 
@@ -290,7 +281,7 @@ export default createStore({
 
     async addProduct(context, userpayload){
       try {
-        const res = await axios.post(`https://w-store-api.onrender.com/products`, userpayload);
+        const res = await axios.post(`https://osas-3.onrender.com/products`, userpayload);
 
         console.log(res.data);
 
@@ -308,9 +299,9 @@ export default createStore({
     async addToCart(context,userValidity){
 
       try {
-        const res = await axios.post(`https://w-store-api.onrender.com/cart/${userValidity}?user_id=${$cookies.get('userId')}`,userValidity);
+        const res = await axios.post(`https://osas-3.onrender.com/cart/${userValidity}?userID=${$cookies.get('userId')}`,userValidity);
 
-        console.log(`https://w-store-api.onrender.com/cart/${$cookies.get('userId')}`)
+        console.log(`https://osas-3.onrender.com/cart/${$cookies.get('userId')}`)
   
         context.commit('addProd', res.data)
 
@@ -327,7 +318,7 @@ export default createStore({
     async getCart(context){
 
       try {
-        const res = await axios.get(`https://w-store-api.onrender.com/cart`);
+        const res = await axios.get(`https://osas-3.onrender.com/cart`);
       } catch (error) {
 
         await swal(`Unable to get products from cart`, "try to log in first", "error");
@@ -340,9 +331,9 @@ export default createStore({
 
       try {
 
-        const res = axios.delete(`https://w-store-api.onrender.com/cart/${TargProd}?user_id=${$cookies.get('userId')}`);
+        const res = axios.delete(`https://osas-3.onrender.com/cart/${TargProd}?userID=${$cookies.get('userId')}`);
 
-        console.log(TargProd, `https://w-store-api.onrender.com/cart/${TargProd}?user_id=${$cookies.get('userId')}`)
+        console.log(TargProd, `https://osas-3.onrender.com/cart/${TargProd}?userID=${$cookies.get('userId')}`)
   
         window.location.reload();
 
@@ -358,7 +349,7 @@ export default createStore({
 
       try {
 
-        const res = await axios.get(`https://w-store-api.onrender.com/cart/${$cookies.get('userId')}`);
+        const res = await axios.get(`https://osas-3.onrender.com/cart/${$cookies.get('userId')}`);
 
         let allData = res.data.products;
   

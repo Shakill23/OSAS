@@ -2,16 +2,16 @@
     <div id="box">
         <div v-for="user in userIsLogged()" v-bind:key="user" id="user">
             <div>
-                <img :src="user.user_image" :alt="user.user_profile" class="img-fluid rounded-5 shadow" height="300" width="300">
+                <img :src="user.profileURL" :alt="user.username" class="img-fluid rounded-5 shadow" height="300" width="300">
             </div>
             <div id="userCol" class="container-fluid fw-bold">
                 <div class="text-start">
                     <span id="text">User name:</span>
-                    {{ user.user_profile }}
+                    {{ user.username }}
                 </div>
                 <div class="text-start">
                     <span id="text">Email address:</span>
-                    {{ user.user_email }}
+                    {{ user.emailAdd }}
                 </div>
             </div>
         </div>

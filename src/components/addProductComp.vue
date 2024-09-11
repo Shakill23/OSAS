@@ -9,31 +9,31 @@
     
           <h1>Add a product</h1>
           <div class="input-group flex-nowrap mb-2">
-            <span class="input-group-text" id="addon-wrapping" v-if="product_name.length === 0"><i class="fa-solid fa-tags fa-xl" style="color: #ff0000;"></i></span>
+            <span class="input-group-text" id="addon-wrapping" v-if="productName.length === 0"><i class="fa-solid fa-tags fa-xl" style="color: #ff0000;"></i></span>
             <span class="input-group-text" id="addon-wrapping" v-else><i class="fa-solid fa-tags fa-xl" style="color: #11ff00;"></i></span>
-            <input type="text" class="form-control" placeholder="product_name" aria-label="product_name" aria-describedby="addon-wrapping" v-model="product_name">
+            <input type="text" class="form-control" placeholder="productName" aria-label="productName" aria-describedby="addon-wrapping" v-model="productName">
           </div>
           <div class="input-group flex-nowrap mb-2">
-            <span class="input-group-text" id="addon-wrapping" v-if="product_desc.length === 0"><i class="fa-solid fa-pencil fa-xl" style="color: #ff0000;"></i></span>
+            <span class="input-group-text" id="addon-wrapping" v-if="productDesc.length === 0"><i class="fa-solid fa-pencil fa-xl" style="color: #ff0000;"></i></span>
             <span class="input-group-text" id="addon-wrapping" v-else><i class="fa-solid fa-pencil fa-xl" style="color: #11ff00;"></i></span>
-            <input type="text" class="form-control" placeholder="product_desc" aria-label="product_desc" aria-describedby="addon-wrapping" v-model="product_desc">
+            <input type="text" class="form-control" placeholder="productDesc" aria-label="productDesc" aria-describedby="addon-wrapping" v-model="productDesc">
           </div>
           <div class="input-group flex-nowrap mb-2">
-            <span class="input-group-text" id="addon-wrapping" v-if="product_price.length === 0"><i class="fa-solid fa-dollar-sign fa-xl" style="color: #ff0000;"></i></span>
+            <span class="input-group-text" id="addon-wrapping" v-if="amount.length === 0"><i class="fa-solid fa-dollar-sign fa-xl" style="color: #ff0000;"></i></span>
             <span class="input-group-text" id="addon-wrapping" v-else><i class="fa-solid fa-dollar-sign fa-xl" style="color: #11ff00;"></i></span>
-            <input type="text" class="form-control" placeholder="product_price" aria-label="product_price" aria-describedby="addon-wrapping" v-model="product_price">
+            <input type="text" class="form-control" placeholder="amount" aria-label="amount" aria-describedby="addon-wrapping" v-model="amount">
           </div>
           <div class="input-group flex-nowrap mb-2">
-            <span class="input-group-text" id="addon-wrapping" v-if="product_img.length === 0"><i class="fa-solid fa-image fa-xl" style="color: #ff0000;"></i></span>
+            <span class="input-group-text" id="addon-wrapping" v-if="productURL.length === 0"><i class="fa-solid fa-image fa-xl" style="color: #ff0000;"></i></span>
             <span class="input-group-text" id="addon-wrapping" v-else><i class="fa-regular fa-image fa-xl" style="color: #11ff00;"></i></span>
-            <input type="text" class="form-control" placeholder="product_image" aria-label="product_image" aria-describedby="addon-wrapping" v-model="product_img">
+            <input type="text" class="form-control" placeholder="product_image" aria-label="product_image" aria-describedby="addon-wrapping" v-model="productURL">
           </div>
           <div class="input-group flex-nowrap mb-2">
-            <span class="input-group-text" id="addon-wrapping" v-if="product_category.length === 0"><i class="fa-solid fa-list fa-xl" style="color: #ff0000;"></i></span>
+            <span class="input-group-text" id="addon-wrapping" v-if="category.length === 0"><i class="fa-solid fa-list fa-xl" style="color: #ff0000;"></i></span>
             <span class="input-group-text" id="addon-wrapping" v-else><i class="fa-solid fa-list fa-xl" style="color: #11ff00;"></i></span>
-            <input type="text" class="form-control" placeholder="product_category" aria-label="product_category" aria-describedby="addon-wrapping" v-model="product_category">
+            <input type="text" class="form-control" placeholder="category" aria-label="category" aria-describedby="addon-wrapping" v-model="category">
           </div>
-          <button class="btn btn-outline-dark" v-if="product_img.length === 0 || product_name.length === 0 || product_price.length === 0 || product_desc.length === 0 || product_category.length === 0" disabled>fill in all input fields</button>
+          <button class="btn btn-outline-dark" v-if="productURL.length === 0 || productName.length === 0 || amount.length === 0 || productDesc.length === 0 || category.length === 0" disabled>fill in all input fields</button>
           <button @click="addProduct()" class="btn btn-outline-primary" v-else>Add product to Database <i class="fa-solid fa-database fa-bounce fa-xl" style="color: blue;"></i></button>
           <div id="errOnInput"></div>
         </div>
@@ -46,11 +46,11 @@ export default {
     data(){
         return{
             //products:
-            product_name : '',
-            product_desc : '',
-            product_price : '',
-            product_img: '',
-            product_category : ''
+            productName : '',
+            productDesc : '',
+            amount : '',
+            productURL: '',
+            category : ''
         }
     },
     methods : {

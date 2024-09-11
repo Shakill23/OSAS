@@ -8,27 +8,27 @@
                         <p id="XYX" class="card-text small mx-2 my-1"><i class="fa-regular fa-circle-user fa-lg" style="color: #04ff00;"></i> Active</p>
                     </div>
 
-                    <img :src="user.user_image" class="card-img-top pt-2" id="objectImg" :alt="user.user_profile">
+                    <img :src="user.profileURL" class="card-img-top pt-2" id="objectImg" :alt="user.username">
                     <div class="card-body">
-                        <h5 class="card-title fs-4">{{ user.user_profile }}</h5>
-                        <p class="card-text fs-4">{{ user.user_email }}</p>
+                        <h5 class="card-title fs-4">{{ user.username }}</h5>
+                        <p class="card-text fs-4">{{ user.emailAdd }}</p>
                     </div>
                     <div class="container">
                         <div class="input-group flex-nowrap mb-2">
                             <span class="input-group-text" id="addon-wrapping">Username</span>
-                            <input type="text" class="form-control" placeholder="user_name" aria-label="Username" aria-describedby="addon-wrapping" v-model="user_profile">
+                            <input type="text" class="form-control" placeholder="user_name" aria-label="Username" aria-describedby="addon-wrapping" v-model="username">
                           </div>
                           <div class="input-group flex-nowrap mb-2">
                              <span class="input-group-text" id="addon-wrapping">Profile img</span>
-                             <input type="text" class="form-control" placeholder="user_image" aria-label="Username" aria-describedby="addon-wrapping" v-model="user_image">
+                             <input type="text" class="form-control" placeholder="profileURL" aria-label="Username" aria-describedby="addon-wrapping" v-model="profileURL">
                           </div>
                           <div class="input-group flex-nowrap mb-2">
                             <span class="input-group-text" id="addon-wrapping">Email add</span>
-                            <input type="text" class="form-control" placeholder="user_email" aria-label="Email" aria-describedby="addon-wrapping" v-model="user.user_email" readonly>
+                            <input type="text" class="form-control" placeholder="emailAdd" aria-label="Email" aria-describedby="addon-wrapping" v-model="user.emailAdd" readonly>
                           </div>
                           <div class="d-flex gap-2 justify-content-center my-2 col-lg-6 mx-auto">
                             <router-link to="/products" class="btn" id="button">My shop</router-link>
-                            <button type="button" class="btn btn-primary" id="button" @click="updateUser(user.user_id)">Save my changes</button>
+                            <button type="button" class="btn btn-primary" id="button" @click="updateUser(user.userID)">Save my changes</button>
                             <router-link to="/admin" class="btn" id="button" v-if="$cookies.get('role') === 'admin'">Manage website</router-link>
                         </div>
                     </div>
@@ -83,12 +83,12 @@
 export default {
     data(){
         return {
-            user_id : $cookies.get('userId'),
-            user_profile : '',
-            user_email : '',
-            user_password : '',
-            user_role : '',
-            user_image : '',
+            userID : $cookies.get('userId'),
+            username : '',
+            emailAdd : '',
+            passw : '',
+            userRole : '',
+            profileURL : '',
         }
     },
     methods : {
@@ -99,14 +99,14 @@ export default {
         getCart(){
             this.$store.dispatch('userCart');
         },
-        updateUser(user_id){
+        updateUser(userID){
           let userObjX = {
-            user_id : this.user_id,
-            user_profile : this.user_profile,
-            user_email : this.user_email,
-            user_password : this.user_password,
-            user_role : this.user_role,
-            user_image : this.user_image
+            userID : this.userID,
+            username : this.username,
+            emailAdd : this.emailAdd,
+            passw : this.passw,
+            userRole : this.userRole,
+            profileURL : this.profileURL
           }
           this.$store.dispatch('updateUser', userObjX);
         },

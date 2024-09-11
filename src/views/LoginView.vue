@@ -4,20 +4,20 @@
             <div class="row align-items-center g-lg-5 py-5">
               <div class="col-md-10 mx-auto col-lg-5 py-5" id="form">
                   <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" v-model="user_email">
+                    <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" v-model="emailAdd">
                     <label for="floatingEmail">Email address</label>
                   </div>
                   <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password" v-model="user_password">
+                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password" v-model="passw">
                     <label for="floatingPassword">Password</label>
                   </div>
                   <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="floatingRole" placeholder="Role" v-model="user_role" disabled>
+                    <input type="password" class="form-control" id="floatingRole" placeholder="Role" v-model="userRole" disabled>
                     <label for="floatingRole">Identity code</label>
                   </div>
                   <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingRole" placeholder="Specify your role to access as admin" v-model="user_role" v-if="this.user_email === 'JD1@gmail.com'">
-                    <label for="floatingRole" v-if="this.user_email === 'JD1@gmail.com'">Specify your role to access as admin</label>
+                    <input type="text" class="form-control" id="floatingRole" placeholder="Specify your role to access as admin" v-model="userRole" v-if="this.emailAdd === 'JD1@gmail.com'">
+                    <label for="floatingRole" v-if="this.emailAdd === 'JD1@gmail.com'">Specify your role to access as admin</label>
                   </div>
                   <div class="d-flex gap-1 mt-2">
                     <button class="w-100 btn" type="submit" @click="loginUser()">Login</button>
@@ -35,17 +35,17 @@ export default {
 
     data(){
       return {
-        user_id : null,
-        user_profile : '',
-        user_email : '',
-        user_password : '',
-        user_role : 'user',
-        user_image : ''
+        userID : null,
+        username : '',
+        emailAdd : '',
+        passw : '',
+        userRole : 'user',
+        profileURL : ''
       }
     },
     methods : {
       loginUser(){
-        // console.log(this.$data.user_profile)
+        // console.log(this.$data.username)
         this.$store.dispatch('loginUser', this.$data)
       }
     }

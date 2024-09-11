@@ -22,26 +22,26 @@
     
         <div class="mt-2 pt-5 px-2 container" id="cardBox">
 
-            <div class="card m-1" id="cardBody" style="width: 18rem;" v-for='product in searchByName() || sortBy() || HightToLow()' v-bind:key='product.product_id'>
+            <div class="card m-1" id="cardBody" style="width: 18rem;" v-for='product in searchByName() || sortBy() || HightToLow()' v-bind:key='product.productID'>
 
-                <img :src="product.product_img" class="card-img-top" :alt="product.product_name" loading="lazy" id="productImg">
+                <img :src="product.productURL" class="card-img-top" :alt="product.productName" loading="lazy" id="productImg">
 
                 <div class="card-body border-top">
     
                     <div class="card-title" id="txtHeight">
     
-                      <h5>{{product.product_name}}</h5>
+                      <h5>{{product.productName}}</h5>
     
                     </div>
 
-                    <p class="card-text">R {{product.product_price}}</p>
+                    <p class="card-text">R {{product.amount}}</p>
                     
                     <p class="card-text">
                       category :
-                      {{product.product_category}}
+                      {{product.category}}
                     </p>
 
-                  <router-link @click="fetchProduct(product.product_id)" :to="{ name: 'product', params: { productId: product.product_id }} " class="btn btn-dark"  v-if="$cookies.get('jwt')">details <i class="fa-regular fa-eye fa-sm" style="color: #ffffff;"></i></router-link>
+                  <router-link @click="fetchProduct(product.productID)" :to="{ name: 'product', params: { productId: product.productID }} " class="btn btn-dark"  v-if="$cookies.get('jwt')">details <i class="fa-regular fa-eye fa-sm" style="color: #ffffff;"></i></router-link>
                   <router-link to="/login" class="regText" v-else>Click here to Log in or register first!</router-link>
 
                 </div>
@@ -69,7 +69,7 @@ export default {
             let storageArr = this.$store.state.products;
             let inputX = this.search;
             let resultY = storageArr.filter(prod => {
-                return prod.product_name.toLowerCase().includes(inputX.toLowerCase()) || prod.product_category.toLowerCase().includes(inputX.toLowerCase()) 
+                return prod.productName.toLowerCase().includes(inputX.toLowerCase()) || prod.category.toLowerCase().includes(inputX.toLowerCase()) 
             });
             return resultY;
         },
@@ -77,11 +77,11 @@ export default {
             let products = this.$store.state.products;
 
             if (products) {
-                products.sort((a, b) => a.product_price - b.product_price);
+                products.sort((a, b) => a.amount - b.amount);
             }
         },
-        fetchProduct(product_id){
-            this.$store.dispatch('fetchProduct', product_id)
+        fetchProduct(productID){
+            this.$store.dispatch('fetchProduct', productID)
         },
         isLogged(){
             this.$store.dispatch('')
@@ -90,7 +90,7 @@ export default {
             let products = this.$store.state.products;
 
             if (products) {
-                products.sort((a, b) => b.product_price - a.product_price );
+                products.sort((a, b) => b.amount - a.amount );
             }
 
         }

@@ -8,27 +8,27 @@
               </div>
               <div class="col-md-10 mx-auto col-lg-5" id="bgForm">
                   <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingName" placeholder="Your name" v-model="user_profile" data-inp>
+                    <input type="text" class="form-control" id="floatingName" placeholder="Your name" v-model="username" data-inp>
                     <label for="floatingName">Name</label>
                   </div>
                   <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" v-model="user_email" data-inp>
+                    <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" v-model="emailAdd" data-inp>
                     <label for="floatingEmail">Email address</label>
                   </div>
                   <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password" v-model="user_password" data-inp>
+                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password" v-model="passw" data-inp>
                     <label for="floatingPassword">Password</label>
                   </div>
                   <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="floatingRole" placeholder="Role" v-model="user_role" disabled data-inp>
+                    <input type="password" class="form-control" id="floatingRole" placeholder="Role" v-model="userRole" disabled data-inp>
                     <label for="floatingRole">Identity code</label>
                   </div>
                   <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingImgInput" placeholder="image" v-model="user_image" data-inp>
+                    <input type="text" class="form-control" id="floatingImgInput" placeholder="image" v-model="profileURL" data-inp>
                     <label for="floatingImgInput">image</label>
                   </div>
                   <div class="d-flex gap-1 mt-2">
-                    <button class="w-100 btn btn-lg" type="submit" id="btn" v-if="this.user_profile.length === 0 || this.user_email.length === 0 || this.user_password.length === 0 || this.user_password.length < 5 || this.user_image.length === 0" disabled>Fill in your details</button>
+                    <button class="w-100 btn btn-lg" type="submit" id="btn" v-if="this.username.length === 0 || this.emailAdd.length === 0 || this.passw.length === 0 || this.passw.length < 5 || this.profileURL.length === 0" disabled>Fill in your details</button>
                     <button @click="signUser()" class="w-100 btn btn-lg btn-primary" id="btn" v-else>Sign up <i class="fa-regular fa-user fa-bounce fa-lg" style="color: #000000;"></i></button>
                   </div>
                   <hr class="my-4">
@@ -45,11 +45,11 @@ export default {
 
     data(){
       return {
-        user_profile : '',
-        user_email : '',
-        user_password : '',
-        user_role : 'user',
-        user_image : ''
+        username : '',
+        emailAdd : '',
+        passw : '',
+        userRole : 'user',
+        profileURL : ''
       }
     },
     methods : {

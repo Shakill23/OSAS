@@ -54,7 +54,7 @@
                     <div id="prodName"><span>Name:</span> {{ cart.prodName }}</div>
                 </div>
                 <div class="py-1 my-3 px-2">
-                    <div id="prodPrice"><span>Price:</span> R{{ cart.product_price }}</div>
+                    <div id="prodPrice"><span>Price:</span> R{{ cart.amount }}</div>
                 </div>
                 <div class="py-2 my-3 px-4 d-flex gap-2 border-top">
                     <button @click="addToFavs(cart)" class="btn bg-white shadow border text-white" :title="'add ' + cart.prodName + ' to favourites'"><i class="fa-regular fa-heart fa-lg fa-beat" style="color: #ff0000;"></i></button>
@@ -92,8 +92,8 @@ export default {
         getCart(){
             this.$store.dispatch('userCart')
         }, 
-        deleteFromCart(product_id){
-            this.$store.dispatch('removeFromCart', product_id)
+        deleteFromCart(productID){
+            this.$store.dispatch('removeFromCart', productID)
         },
         async addToFavs(favz){
             let storage = this.Userfavourites
@@ -121,7 +121,7 @@ export default {
             let inCart = this.$store.state.cartState;
 
             if (inCart) {
-                inCart.sort((a, b) => a.product_price - b.product_price);
+                inCart.sort((a, b) => a.amount - b.amount);
             }
         },
     },
