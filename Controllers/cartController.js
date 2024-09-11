@@ -30,7 +30,7 @@ const cartController = {
             const cartItems = await getCart(userId); // Fetch cart based on userID
             
             if (!cartItems || cartItems.length === 0) {
-                return res.status(404).json({ msg: 'No cart items found for this user.' });
+                return res.status(200).json({ products: [], msg: 'Cart is empty.' }); // Return empty cart if none found
             }
     
             return res.status(200).json({ products: cartItems });
@@ -81,6 +81,7 @@ const cartController = {
         }
     },
 
+    // Users can delete specific items from their cart
     deleteSpecificItem: async (req, res) => {
         try {
             const userProfile = await checkProfile(req.user.emailAdd);
