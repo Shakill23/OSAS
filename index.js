@@ -15,9 +15,12 @@ const PORT = process.env.PORT || 2307;
 app.use(express.static('./Static'));
 
 app.use(cors({
-    origin: 'http://localhost:8080',
-    credentials: true
+    origin: 'http://localhost:8080', // Allow your frontend origin
+    credentials: true, 
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'], 
+    allowedHeaders: ['Content-Type', 'Authorization'], 
 }));
+
 
 app.use(express.json());
 app.use(cookieParser());

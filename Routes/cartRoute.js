@@ -8,10 +8,10 @@ const router = express.Router();
 router.use(authenticate);
 
 // Define the cart routes that are accessible by registered users
-router.get('/user/:id/carts', cartController.allCartItems);
-router.post('/user/:id/cart', cartController.addToCartTable);
-router.patch('/user/:id/cart/:cartItemId', cartController.editCart);
-router.delete('/user/:id/cart', cartController.deleteFromCart);
-router.delete('/user/:id/cart/:cartItemId', cartController.deleteSpecificItem);
+router.get('/', cartController.allCartItems); // Fetch the user's cart
+router.post('/', cartController.addToCartTable); // Add items to cart
+router.patch('/:cartItemId', cartController.editCart); // Edit cart item
+router.delete('/:cartItemId', cartController.deleteSpecificItem); // Delete specific item from cart
+router.delete('/', cartController.deleteFromCart); // Remove all items from cart
 
 export default router;

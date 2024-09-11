@@ -26,15 +26,16 @@ const cartController = {
     // All users can access their cart items
     allCartItems: async (req, res) => {
         try {
-            const userId = req.params.id; // Use the user ID passed in the route
+            const userId = req.user.userID; // Get the authenticated user's ID from the token
             const cartItems = await getCart(userId); // Fetch cart based on userID
-            
+
             if (!cartItems || cartItems.length === 0) {
-                return res.status(200).json({ products: [], msg: 'Cart is empty.' }); // Return empty cart if none found
+                return res.status(200).json({ products: [], msg: 'Your cart is empty.' }); // Return empty cart with message
             }
     
             return res.status(200).json({ products: cartItems });
         } catch (error) {
+            console.error('Error fetching cart items:', error);
             return res.status(500).json({ msg: "Unable to retrieve cart items. Please try again later." });
         }
     },
@@ -42,14 +43,19 @@ const cartController = {
     // Users can add items to their cart
     addToCartTable: async (req, res) => {
         try {
-            const { quantity } = req.body;
-            const product = await getProductByID(+req.params.productID);
+            const { productID, quantity } = req.body;
             const userProfile = await checkProfile(req.user.emailAdd);
+
+            const product = await getProductByID(productID);
+            if (!product) {
+                return res.status(404).json({ msg: "Product not found." });
+            }
 
             await insert(product.productID, userProfile.userID, quantity);
             const updatedCart = await addedInCart(userProfile.userID);
             return res.status(201).json(updatedCart);
         } catch (error) {
+            console.error('Error adding item to cart:', error);
             return res.status(500).json({ msg: "Unable to add item to cart. Please try again later." });
         }
     },
@@ -58,10 +64,17 @@ const cartController = {
     deleteFromCart: async (req, res) => {
         try {
             const userProfile = await checkProfile(req.user.emailAdd);
-            await removeFromCart(+req.params.productID, userProfile.userID);
+            const productID = req.params.productID;
+
+            const result = await removeFromCart(productID, userProfile.userID);
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ msg: "Item not found in cart." });
+            }
+
             const updatedCart = await getCart(userProfile.userID);
             return res.status(200).json(updatedCart);
         } catch (error) {
+            console.error('Error removing item from cart:', error);
             return res.status(500).json({ msg: "Unable to remove item from cart. Please try again later." });
         }
     },
@@ -73,11 +86,16 @@ const cartController = {
             const cartID = +req.params.cartItemId;
             const userProfile = await checkProfile(req.user.emailAdd);
 
-            await editCart(productID, userProfile.userID, quantity, cartID);
+            const cartItem = await editCart(productID, userProfile.userID, quantity, cartID);
+            if (!cartItem) {
+                return res.status(404).json({ msg: "Cart item not found." });
+            }
+
             const updatedCart = await getCart(userProfile.userID);
             return res.status(200).json(updatedCart);
         } catch (error) {
-            return res.status(500).json({ msg: error.message || "Unable to update cart item. Please try again later." });
+            console.error('Error updating cart:', error);
+            return res.status(500).json({ msg: "Unable to update cart item. Please try again later." });
         }
     },
 
@@ -85,10 +103,17 @@ const cartController = {
     deleteSpecificItem: async (req, res) => {
         try {
             const userProfile = await checkProfile(req.user.emailAdd);
-            await deleteSpecificItem(+req.params.cartItemId, userProfile.userID);
+            const cartItemId = req.params.cartItemId;
+
+            const result = await deleteSpecificItem(cartItemId, userProfile.userID);
+            if (result.affectedRows === 0) {
+                return res.status(404).json({ msg: "Item not found in cart." });
+            }
+
             const updatedCart = await getCart(userProfile.userID);
             return res.status(200).json(updatedCart);
         } catch (error) {
+            console.error('Error deleting item from cart:', error);
             return res.status(500).json({ msg: "Unable to delete item from cart. Please try again later." });
         }
     }
