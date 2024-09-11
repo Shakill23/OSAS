@@ -12,44 +12,48 @@ import authenticate from './Middleware/signToken.js';
 const app = express();
 const PORT = process.env.MYSQL_ADDON_PORT || 2303;
 
+// Static files
 app.use(express.static('./Static'));
 
+// Enable CORS with credentials
 app.use(cors({
     origin: 'http://localhost:8080',
     credentials: true
 }));
 
+// Handle preflight (OPTIONS) requests for all routes
+app.options('*', cors());
+
+// Middleware for parsing JSON and cookies
 app.use(express.json());
 app.use(cookieParser());
 
-app.post('/login', authenticate, (req, res) => { 
+// Add CORS headers to every response (just to be extra sure)
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+    res.header('Access-Control-Allow-Credentials', 'true');
+    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    next();
 });
 
+// Login route with CORS handling
+app.post('/login', cors(), authenticate, (req, res) => { 
+    // login logic goes here
+});
+
+// Logout route
 app.delete('/logout', (req, res) => {
-    res.clearCookie('jwt')
+    res.clearCookie('jwt');
     res.json({
-        msg : 'logged out successfully'
+        msg: 'logged out successfully'
     });
 });
 
+// Route handlers
 app.use('/products', productsRoute);
 app.use('/cart', cartRoute);
 app.use('/users', userRoute);
 
-app.listen(PORT, console.log(`server running on http://localhost:${PORT}`));
-
-
-
-
-
-// {
-//     "user_profile": "JohnDoe",
-//     "user_email": "JD1@gmail.com",
-//     "user_password": "john",
-//     "user_role": "admin",
-//     "user_image": "nothing"
-// }
- 
-
-{/* <blockquote class="imgur-embed-pub" lang="en" data-id="a/PlyvO0z" data-context="false" ><a href="//imgur.com/a/PlyvO0z"></a></blockquote><script async src="//s.imgur.com/min/embed.js" charset="utf-8"></script> */}
-// https://i.imgur.com/8Pvhmao.mp4
+// Start the server
+app.listen(PORT, () => console.log(`server running on http://localhost:${PORT}`));
