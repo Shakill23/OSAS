@@ -1,96 +1,66 @@
 <template>
-  <div id="landing">
-      <div class="container col-xl-10 col-xxl-8 px-4 py-5">
-          <div class="row align-items-center g-lg-5 py-5">
+    <div id="landing">
+        <div class="container col-xl-10 col-xxl-8 px-4 py-5">
+            <div class="row align-items-center g-lg-5 py-5">
               <div class="col-lg-7 text-center text-lg-start">
-                  <h1 class="display-4 fw-bold lh-1 text-white mb-3">Sign up now with W store</h1>
-                  <p class="col-lg-10 fs-4 text-white">Get unlimited access to W-store's latest product, sign up and get started with us!</p>
+                <h1 class="display-4 fw-bold lh-1 text-white mb-3">Sign up now with W store</h1>
+                <p class="col-lg-10 fs-4 text-white">Get unlimited access to W-store's latest product, Sign up and get started with us!</p>
               </div>
               <div class="col-md-10 mx-auto col-lg-5" id="bgForm">
                   <div class="form-floating mb-3">
-                      <input type="text" class="form-control" id="floatingName" placeholder="Your name" v-model="username" data-inp>
-                      <label for="floatingName">Name</label>
+                    <input type="text" class="form-control" id="floatingName" placeholder="Your name" v-model="user_profile" data-inp>
+                    <label for="floatingName">Name</label>
                   </div>
                   <div class="form-floating mb-3">
-                      <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" v-model="emailAdd" data-inp>
-                      <label for="floatingEmail">Email address</label>
+                    <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" v-model="user_email" data-inp>
+                    <label for="floatingEmail">Email address</label>
                   </div>
                   <div class="form-floating mb-3">
-                      <input type="password" class="form-control" id="floatingPassword" placeholder="Password" v-model="passw" data-inp>
-                      <label for="floatingPassword">Password</label>
-                      <small v-if="passw.length > 0 && passw.length < 5" class="text-danger">Password must be at least 5 characters long</small>
+                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password" v-model="user_password" data-inp>
+                    <label for="floatingPassword">Password</label>
                   </div>
                   <div class="form-floating mb-3">
-                      <input type="password" class="form-control" id="floatingRole" placeholder="Role" v-model="userRole" disabled data-inp>
-                      <label for="floatingRole">Identity code</label>
+                    <input type="password" class="form-control" id="floatingRole" placeholder="Role" v-model="user_role" disabled data-inp>
+                    <label for="floatingRole">Identity code</label>
                   </div>
                   <div class="form-floating mb-3">
-                      <input type="file" class="form-control" id="floatingImgInput" @change="handleImageUpload" data-inp>
-                      <label for="floatingImgInput">Profile image</label>
+                    <input type="text" class="form-control" id="floatingImgInput" placeholder="image" v-model="user_image" data-inp>
+                    <label for="floatingImgInput">image</label>
                   </div>
                   <div class="d-flex gap-1 mt-2">
-                      <button class="w-100 btn btn-lg" type="submit" id="btn" v-if="isDisabled" disabled>Fill in your details</button>
-                      <button @click="signUser()" class="w-100 btn btn-lg btn-primary" id="btn" v-else>Sign up <i class="fa-regular fa-user fa-bounce fa-lg" style="color: #000000;"></i></button>
+                    <button class="w-100 btn btn-lg" type="submit" id="btn" v-if="this.user_profile.length === 0 || this.user_email.length === 0 || this.user_password.length === 0 || this.user_password.length < 5 || this.user_image.length === 0" disabled>Fill in your details</button>
+                    <button @click="signUser()" class="w-100 btn btn-lg btn-primary" id="btn" v-else>Sign up <i class="fa-regular fa-user fa-bounce fa-lg" style="color: #000000;"></i></button>
                   </div>
                   <hr class="my-4">
                   <small><router-link to="/login" class="text-white">I have an account</router-link></small>
-                  <div id="errorText" v-if="errorMessage" class="text-danger">{{ errorMessage }}</div>
+                <div id="eerTxt"></div>
               </div>
+            </div>
           </div>
-      </div>
-  </div>
+    </div>
 </template>
-
 <script>
 import router from '@/router';
 export default {
-  data() {
-      return {
-          username: '',
-          emailAdd: '',
-          passw: '',
-          userRole: 'user',
-          profileURL: '',
-          errorMessage: '', // To capture and display error messages
-      };
-  },
-  computed: {
-      isDisabled() {
-          return (
-              !this.username ||
-              !this.emailAdd ||
-              !this.passw ||
-              this.passw.length < 5 ||
-              !this.profileURL
-          );
-      },
-  },
-  methods: {
-      handleImageUpload(event) {
-          const file = event.target.files[0];
-          if (file) {
-              const reader = new FileReader();
-              reader.onload = (e) => {
-                  this.profileURL = e.target.result;
-              };
-              reader.readAsDataURL(file);
-          }
-      },
-      async signUser() {
-          try {
-              await this.$store.dispatch('SignUser', this.$data);
-              // Provide feedback or success message
-              await swal('Registration Successful', 'You can now log in!', 'success');
-              router.push('/login');
-          } catch (error) {
-              this.errorMessage = 'Failed to create account. Please try again.';
-              console.error('Registration error:', error);
-          }
-      },
-  },
-};
-</script>
 
+    data(){
+      return {
+        user_profile : '',
+        user_email : '',
+        user_password : '',
+        user_role : 'user',
+        user_image : ''
+      }
+    },
+    methods : {
+      signUser(){
+        this.$store.dispatch('SignUser', this.$data)
+        router.push('/login')
+      }
+    }
+    
+}
+</script>
 <style scoped>
 
 #landing{

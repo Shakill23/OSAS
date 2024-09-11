@@ -1,122 +1,60 @@
 <template>
-  <nav class="navbar navbar-expand-lg" id="navbar">
-    <div class="container-fluid">
-      <a class="navbar-brand text-black" href="#">
-        <img
-          src="https://cdn-thumbs.imagevenue.com/ab/92/30/ME17RFMK_t.png"
-          alt="Wstore-Logo"
-          width="35"
-          height="35"
-          class="d-inline-block align-text-center"
-        />
-        W-Store
-      </a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-bs-toggle="collapse"
-        data-bs-target="#navbarNavAltMarkup"
-        aria-controls="navbarNavAltMarkup"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-        <div class="navbar-nav ms-auto">
-          <router-link class="nav-link" active-class="active" to="/">Home</router-link>
-          <router-link class="nav-link" active-class="active" to="/about">About</router-link>
-          <router-link class="nav-link" active-class="active" to="/products">Products</router-link>
-          <router-link
-            class="nav-link"
-            active-class="active"
-            id="usersRole"
-            to="/admin"
-            v-if="$cookies.get('jwt') && $cookies.get('role') === 'Admin'"
-            >Admin</router-link
-          >
-          <router-link
-            class="nav-link"
-            active-class="active"
-            to="/profile"
-            v-if="$cookies.get('jwt')"
-            >Profile</router-link
-          >
-          <router-link
-            class="nav-link"
-            active-class="active"
-            to="/login"
-            v-if="!$cookies.get('jwt')"
-            >Login</router-link
-          >
-          <router-link
-            class="nav-link"
-            active-class="active"
-            to="/contact"
-            >Contact</router-link
-          >
-          <router-link
-            class="nav-link"
-            id="cartXYZ"
-            to="/cart"
-            v-if="$cookies.get('jwt')"
-            ><i class="fa-solid fa-cart-shopping fa-lg" style="color: #0497c9;"></i>
-            <span>{{ cartItemCount }}</span>
-          </router-link>
-          <button
-            v-if="$cookies.get('jwt')"
-            @click="logOut"
-            class="btn bg-black"
-            aria-label="Logout"
-          >
-            <i
-              class="fa-solid fa-arrow-right-from-bracket fa-sm"
-              style="color: #ffffff;"
-            ></i>
-          </button>
-        </div>
-      </div>
-    </div>
-  </nav>
+        <nav class="navbar navbar-expand-lg" id="navbar">
+            <div class="container-fluid">
+                <a class="navbar-brand text-black" href="#">
+                    <img src="https://cdn-thumbs.imagevenue.com/ab/92/30/ME17RFMK_t.png" alt="Wstore-Logo" width="35" height="35" class="d-inline-block align-text-center">
+                    W-Store
+                  </a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                <div class="navbar-nav ms-auto">
+                    <router-link class="nav-link" to="/">Home</router-link>
+                    <router-link class="nav-link" to="/about">About</router-link> 
+                    <router-link class="nav-link" to="/products">products</router-link> 
+                    <router-link class="nav-link" id="usersRole" to="/admin" v-if="$cookies.get('jwt') && $cookies.get('role') === 'admin'">Admin</router-link> 
+                    <router-link class="nav-link" to="/profile" v-if="$cookies.get('jwt')">profile</router-link>
+                    <router-link class="nav-link" to="/login" v-if="!$cookies.get('jwt')">login</router-link>
+                    <router-link class="nav-link" to="/contact">Contact</router-link>
+                    <router-link class="nav-link" id="cartXYZ" to="/cart" v-if="$cookies.get('jwt')"><i class="fa-solid fa-cart-shopping fa-lg" style="color: #0497c9;"></i> <span>{{$store.state.cartState.length}}</span></router-link>
+                    <button v-if="$cookies.get('jwt')" @click="logOut()" class="btn bg-black"><i class="fa-solid fa-arrow-right-from-bracket fa-sm" style="color: #ffffff;"></i></button>
+                  </div>
+                </div>
+            </div>
+          </nav>
 </template>
-
 <script>
+
 export default {
-  data() {
+
+  data(){
     return {
-      cartItemCount: 0, // Initial count set to 0
-    };
+      count : 0,
+    }
   },
-  created() {
-    this.watchCart(); // Start watching the cart when the component is created
-  },
-  methods: {
-    logOut() {
-      this.$store.dispatch('logoutUser');
+
+  methods : {
+    watchCart(){
+      
     },
-    checkRole() {
-      const userRole = this.$cookies.get('role');
-      console.log(userRole);
-      if (userRole === 'Admin') {
+    logOut(){
+      this.$store.dispatch('logoutUser')
+    },
+    checkRole(){
+      // this.$store.dispatch('loginUser')
+      const userRole = $cookies.get('role')
+      console.log(userRole)
+      if(userRole === 'admin'){
         console.log('you have access');
       } else {
-        console.log(`no access, you are ${userRole}`);
+        console.log(`no access you are ${userRole}`);
       }
-    },
-    watchCart() {
-      // Watch for changes in the cart state
-      this.$watch(
-        () => this.$store.state.cartState,
-        (newValue) => {
-          this.cartItemCount = newValue.length; // Update cart item count when the state changes
-        },
-        { immediate: true }
-      );
-    },
-  },
-};
+    }
+  }
+    
+}
 </script>
-
 <style scoped>
 
 #navbar {

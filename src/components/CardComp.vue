@@ -1,110 +1,106 @@
 <template>
+
     <div id="box">
-      <div class="mt-5 pt-5 px-2 w-100 container" id="searchBar">
-        <input
-          type="search"
-          class="form-control form-control-dark mx-3 w-50"
-          placeholder="Search by categories or product names"
-          aria-label="Search"
-          v-model="search"
-          @input="searchProducts"
-        />
-        <div class="dropdown">
-          <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-            <i class="fa-solid fa-filter fa-lg" style="color: #000000;"></i> Filter
-          </button>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" @click="sortOrder = 'lowToHigh'">Low to high</a></li>
-            <li><a class="dropdown-item" @click="sortOrder = 'highToLow'">High to low</a></li>
-          </ul>
-        </div>
-      </div>
-  
-      <div class="mt-2 pt-5 px-2 container" id="cardBox">
-        <div
-          class="card m-1"
-          id="cardBody"
-          style="width: 18rem;"
-          v-for="product in filteredProducts"
-          :key="product.productID"
-        >
-          <img
-            :src="product.product_img"
-            class="card-img-top"
-            :alt="product.productName"
-            loading="lazy"
-            id="productImg"
-          />
-          <div class="card-body border-top">
-            <div class="card-title" id="txtHeight">
-              <h5>{{ product.productName }}</h5>
+
+        <div class="mt-5 pt-5 px-2 w-100 container" id="searchBar">
+
+            <input type="search" class="form-control form-control-dark mx-3 w-50" placeholder="Search by categoies or product names" aria-label="Search" v-model="search" @change="searchByName()">
+            <!-- <button @click="sortBy()" id="sortBy" class="mx-2">sort by price</button> -->
+            <!-- <button @click="sortByPcs()" id="sortBy" class="mx-2">Gaming Desktop PC</button> -->
+            <div class="dropdown">
+                <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fa-solid fa-filter fa-lg" style="color: #000000;"></i> Filter
+                </button>
+                <ul class="dropdown-menu">
+                    <li><a class="dropdown-item" @click="sortBy()">Low to high</a></li>
+                    <li><a class="dropdown-item" @click="HightToLow()">High to low</a></li>
+                </ul>
             </div>
-            <p class="card-text">R {{ product.amount }}</p>
-            <p class="card-text">category: {{ product.category }}</p>
-  
-            <router-link
-              @click="fetchProduct(product.productID)"
-              :to="{ name: 'product', params: { productId: product.productID } }"
-              class="btn btn-dark"
-              v-if="$cookies.get('jwt')"
-              >details <i class="fa-regular fa-eye fa-sm" style="color: #ffffff;"></i
-            ></router-link>
-            <router-link to="/login" class="regText" v-else>Click here to Log in or register first!</router-link>
-          </div>
+
+
         </div>
-      </div>
+    
+        <div class="mt-2 pt-5 px-2 container" id="cardBox">
+
+            <div class="card m-1" id="cardBody" style="width: 18rem;" v-for='product in searchByName() || sortBy() || HightToLow()' v-bind:key='product.product_id'>
+
+                <img :src="product.product_img" class="card-img-top" :alt="product.product_name" loading="lazy" id="productImg">
+
+                <div class="card-body border-top">
+    
+                    <div class="card-title" id="txtHeight">
+    
+                      <h5>{{product.product_name}}</h5>
+    
+                    </div>
+
+                    <p class="card-text">R {{product.product_price}}</p>
+                    
+                    <p class="card-text">
+                      category :
+                      {{product.product_category}}
+                    </p>
+
+                  <router-link @click="fetchProduct(product.product_id)" :to="{ name: 'product', params: { productId: product.product_id }} " class="btn btn-dark"  v-if="$cookies.get('jwt')">details <i class="fa-regular fa-eye fa-sm" style="color: #ffffff;"></i></router-link>
+                  <router-link to="/login" class="regText" v-else>Click here to Log in or register first!</router-link>
+
+                </div>
+
+            </div>
+
+        </div>
+        
     </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        search: "",
-        sortOrder: null, // Sorting order: 'lowToHigh' or 'highToLow'
-      };
-    },
-    computed: {
-      filteredProducts() {
-        let products = this.$store.state.products || [];
-  
-        // Filter by search input
-        if (this.search) {
-          products = products.filter((prod) => {
-            return (
-              prod.productName.toLowerCase().includes(this.search.toLowerCase()) ||
-              prod.category.toLowerCase().includes(this.search.toLowerCase())
-            );
-          });
+
+</template>
+<script>
+
+export default {
+    data(){
+        return{
+            search: ''
         }
-  
-        // Sort based on sortOrder
-        if (this.sortOrder === "lowToHigh") {
-          products = products.sort((a, b) => a.amount - b.amount);
-        } else if (this.sortOrder === "highToLow") {
-          products = products.sort((a, b) => b.amount - a.amount);
+    },
+    methods : {
+        fetchProducts(){
+            this.$store.dispatch('fetchProducts')
+        },
+        searchByName(){
+            let storageArr = this.$store.state.products;
+            let inputX = this.search;
+            let resultY = storageArr.filter(prod => {
+                return prod.product_name.toLowerCase().includes(inputX.toLowerCase()) || prod.product_category.toLowerCase().includes(inputX.toLowerCase()) 
+            });
+            return resultY;
+        },
+        sortBy(){
+            let products = this.$store.state.products;
+
+            if (products) {
+                products.sort((a, b) => a.product_price - b.product_price);
+            }
+        },
+        fetchProduct(product_id){
+            this.$store.dispatch('fetchProduct', product_id)
+        },
+        isLogged(){
+            this.$store.dispatch('')
+        },
+        HightToLow(){
+            let products = this.$store.state.products;
+
+            if (products) {
+                products.sort((a, b) => b.product_price - a.product_price );
+            }
+
         }
-  
-        return products;
-      },
     },
-    methods: {
-      fetchProducts() {
-        this.$store.dispatch("fetchProducts");
-      },
-      fetchProduct(productID) {
-        this.$store.dispatch("fetchProduct", productID);
-      },
-      searchProducts() {
-        // Trigger search by updating the 'search' model
-      },
-    },
-    mounted() {
-      this.fetchProducts(); // Fetch products on component mount
-    },
-  };
-  </script>
-  
+     mounted(){
+        this.fetchProducts(),
+        this.searchByName()
+     }
+}
+</script>
 <style scoped>
 
     #box{
