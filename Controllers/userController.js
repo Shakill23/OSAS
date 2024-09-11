@@ -41,7 +41,7 @@ export default {
 
         } catch (error) {
             res.status(404).json({
-                msg: "Unable to delete a user that does not exist"
+                msg: "Unable to delete user that does not exist"
             })
         }
 

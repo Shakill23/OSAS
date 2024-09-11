@@ -1,5 +1,5 @@
 import express from 'express';
-import controller from '../Controllers/usercontroller.js';
+import controller from '../Controllers/userController.js';
 import onHashBefore from '../Middleware/hashPwd.js';
 import isRoleEquiqToAdmin from '../Middleware/roleStatus.js';
 
