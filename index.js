@@ -12,9 +12,6 @@ import authenticate from './Middleware/signToken.js';
 const app = express();
 const PORT = process.env.MYSQL_ADDON_PORT || 2303;
 
-// Static files
-app.use(express.static('./Static'));
-
 // CORS configuration
 const corsOptions = {
     origin: 'http://localhost:8080',
@@ -23,7 +20,7 @@ const corsOptions = {
     credentials: true
 };
 
-// Enable CORS
+// Apply CORS globally
 app.use(cors(corsOptions));
 
 // Handle preflight (OPTIONS) requests for all routes
@@ -33,30 +30,16 @@ app.options('*', cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
-// Add CORS headers to every response as fallback
-app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
-    res.header('Access-Control-Allow-Credentials', 'true');
-    res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
-    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-    next();
+// Routes
+app.post('/login', authenticate, (req, res) => { 
+    res.json({ message: 'Logged in successfully!' });
 });
 
-// Login route
-app.post('/login', authenticate, (req, res) => {
-    // Your login logic
-    res.json({ message: "Logged in" });
-});
-
-// Logout route
 app.delete('/logout', (req, res) => {
     res.clearCookie('jwt');
-    res.json({
-        msg: 'logged out successfully'
-    });
+    res.json({ msg: 'Logged out successfully' });
 });
 
-// Route handlers
 app.use('/products', productsRoute);
 app.use('/cart', cartRoute);
 app.use('/users', userRoute);
