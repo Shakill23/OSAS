@@ -1,31 +1,19 @@
 import express from 'express';
-import {
-    getAllUsers,
-    getUser,
-    registerUser,
-    updateUser,
-    deleteUser,
-    loginUserController
-} from '../Controllers/userController.js';
+import controller from '../Controllers/usercontroller.js';
+import onHashBefore from '../Middleware/hashPwd.js';
+import isRoleEquiqToAdmin from '../Middleware/roleStatus.js';
 
 const router = express.Router();
 
-router.route('/')
-    .get((req, res, next) => {
-        console.log('User route hit: GET /users');
-        next();
-    }, getAllUsers);
+router.route('/') 
+    .get(controller.getAllUSers)
+    .post(onHashBefore,controller.addNewUser)
 
-router.post('/register', registerUser);
-
-router.post('/login', loginUserController);
 
 router.route('/:id')
-    .patch((req, res, next) => {
-        console.log(`PATCH /users/${req.params.id} hit`);
-        next();
-    }, updateUser)
-    .get(getUser)
-    .delete(deleteUser);
+    .get(controller.getUser)
+    .delete(controller.deleteUserByID)
+    .patch(controller.editUserByID)
 
-export { router };
+
+export default router
