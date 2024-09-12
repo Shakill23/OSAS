@@ -20,6 +20,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 
+app.use(express.static('./Static'));
 
 app.options('*', cors(corsOptions));
 
