@@ -10,12 +10,12 @@ import userRoute from './Routes/userRoute.js';
 import authenticate from './Middleware/signToken.js';
 
 const app = express();
-const PORT = process.env.MYSQL_ADDON_PORT || 2303;
+const PORT = process.env.PORT || 2303;
 
 // CORS configuration
 const corsOptions = {
-    origin: 'http://localhost:8080',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    origin: 'http://localhost:8080', // Adjust if needed to match frontend URL
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'], // Added PATCH here
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 };
