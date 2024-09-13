@@ -12,7 +12,7 @@ const app = express();
 const PORT = process.env.MYSQL_ADDON_PORT || 3450;
 
 const corsOptions = {
-    origin: 'http://localhost:8080',
+    origin: 'https://osas-a3b2f.web.app',
     methods: ['GET', 'POST', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
