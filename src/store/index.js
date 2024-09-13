@@ -37,64 +37,12 @@ export default createStore({
     
   },
   actions: {
-    async fetchProducts(context){
-      try {
-
-        const res = await axios.get('https://osas-3.onrender.com/products')
-
-        console.log(res.data)
-
-        context.commit('accessProductsData', res.data)
-
-      } catch (error){
-
-        console.error('error has occurred')
-
-        await swal(`Server down or route does not exist`, "try again", "error");
-
-      }
-    },
-    async fetchProduct(context, id){
-
-      try {
-
-        const res = await axios.get(`https://osas-3.onrender.com/products/${id}`)
-      
-        context.commit('accessSingleProduct', res.data)
-
-      } catch (error) {
-
-        console.error('error has occurred')
-
-        const res = await axios.get(`https://osas-3.onrender.com/products/${id}`)
-
-        await swal(`${res.data.msg}`, "try again", "error");
-
-      }
-
-    },
-    async deleteProduct(context, productID){
-
-      try {
-        const res = await axios.delete(`https://osas-3.onrender.com/products/${productID}`);
-
-        await swal(`Deleted product!`, "You have deleted a product", "success");
-
-        window.location.reload()
-
-      } catch (error) {
-
-        await swal(`Product was not found`, "try again", "error");
-
-      }
-
-    },
     async SignUser(context, userpayload){
 
       try {
-        const res = await axios.post(`https://osas-3.onrender.com/users`, userpayload)
+        const res = await axios.post(`https://osas-1-el9f.onrender.com/users`, userpayload)
 
-        await swal(`Welcome to W-store ${userpayload.username}!`, "You have successfully created an account", "success");
+        await swal(`Welcome to W-store ${userpayload.username}!`, "You have successfully created an acccount", "success");
 
         await router.push('/login')
 
@@ -111,24 +59,17 @@ export default createStore({
     },
     async loginUser(context, userInfoIsValid) {
       try {
-        const res = await axios.post(`https://osas-3.onrender.com/login`, userInfoIsValid);
-    
+        const res = await axios.post(`https://osas-1-el9f.onrender.com/login`, userInfoIsValid);
         $cookies.set('jwt', res.data.token);
         $cookies.set('refreshToken', res.data.refreshToken);
         $cookies.set('role', res.data.role);
-    
         const [u] = res.data.isLogged; // Destructure the logged user
-    
         $cookies.set('userId', u.userID);
-    
         const user = res.data.isLogged;
         const storage = JSON.stringify(user);
         localStorage.setItem('activeUser', storage);
-    
         await swal(`Welcome back ${u.username}`, "You have logged in successfully", "success");
-    
         await router.push('/profile');
-    
         window.location.reload();
       } catch (error) {
         // Ensure the error block doesn't use `u` when it's not defined
@@ -139,7 +80,7 @@ export default createStore({
 
       try {
         
-        const res = await axios.delete(`https://osas-3.onrender.com/logout`)
+        const res = await axios.delete(`https://osas-1-el9f.onrender.com/logout`)
 
         $cookies.remove('jwt')
   
@@ -168,7 +109,7 @@ export default createStore({
     async getUsers(context){
       try {
 
-        const res = await axios.get(`https://osas-3.onrender.com/users`)
+        const res = await axios.get(`https://osas-1-el9f.onrender.com/users`)
 
         context.commit('accessUsers', res.data)
 
@@ -188,7 +129,7 @@ export default createStore({
 
       try {
 
-        const res = await axios.get(`https://osas-3.onrender.com/users/${id}`);
+        const res = await axios.get(`https://osas-1-el9f.onrender.com/users/${id}`);
 
         context.commit('accessUser', res.data);
 
@@ -204,7 +145,7 @@ export default createStore({
 
       try {
 
-        const res = await axios.get(`https://osas-3.onrender.com/users`)
+        const res = await axios.get(`https://osas-1-el9f.onrender.com/users`)
 
         console.log(res.data)
 
@@ -220,7 +161,7 @@ export default createStore({
     async deleteUser(context, userID){
       try {
 
-        const res = await axios.delete(`https://osas-3.onrender.com/users/${userID}`);
+        const res = await axios.delete(`https://osas-1-el9f.onrender.com/users/${userID}`);
 
         await swal(`Successfully deleted`, `You have successfuly deleted`, "success");
       
@@ -234,7 +175,7 @@ export default createStore({
     async updateUser(context, update){
 
       try {
-        const res = await axios.patch(`https://osas-3.onrender.com/users/${update.userID}`, update);
+        const res = await axios.patch(`https://osas-1-el9f.onrender.com/users/${update.userID}`, update);
 
         await swal(`Successfully updated`, `You have successfuly updated  ${res.data.username}`, "success");
 
@@ -250,7 +191,7 @@ export default createStore({
 
     async addNewUser(context, adminPayload){
       try {
-        const res = await axios.post(`https://osas-3.onrender.com/users`, adminPayload);
+        const res = await axios.post(`https://osas-1-el9f.onrender.com/users`, adminPayload);
 
         await swal(`Successfully added`, `You have successfuly added ${res.data.productName} to database`, "success");
 
@@ -263,10 +204,63 @@ export default createStore({
       }
     },
 
+    async fetchProducts(context){
+      try {
+
+        const res = await axios.get('https://osas-1-el9f.onrender.com/products')
+
+        console.log(res.data)
+
+        context.commit('accessProductsData', res.data)
+
+      } catch (error){
+
+        console.error('error has occurred')
+
+        await swal(`Server down or route does not exist`, "try again", "error");
+
+      }
+    },
+    async fetchProduct(context, id){
+
+      try {
+
+        const res = await axios.get(`https://osas-1-el9f.onrender.com/products/${id}`)
+      
+        context.commit('accessSingleProduct', res.data)
+
+      } catch (error) {
+
+        console.error('error has occurred')
+
+        const res = await axios.get(`https://osas-1-el9f.onrender.com/products/${id}`)
+
+        await swal(`${res.data.msg}`, "try again", "error");
+
+      }
+
+    },
+    async deleteProduct(context, productID){
+
+      try {
+        const res = await axios.delete(`https://osas-1-el9f.onrender.com/products/${productID}`);
+
+        await swal(`Deleted product!`, "You have deleted a product", "success");
+
+        window.location.reload()
+
+      } catch (error) {
+
+        await swal(`Product was not found`, "try again", "error");
+
+      }
+
+    },
+
     async updateProducts(context, update){
       try {
 
-        const res = await axios.patch(`https://osas-3.onrender.com/products/${update.productID}`, update);
+        const res = await axios.patch(`https://osas-1-el9f.onrender.com/products/${update.productID}`, update);
 
         await swal(`Successfully updated`, `You have successfuly updated product no.${update.productID}`, "success");
 
@@ -281,7 +275,7 @@ export default createStore({
 
     async addProduct(context, userpayload){
       try {
-        const res = await axios.post(`https://osas-3.onrender.com/products`, userpayload);
+        const res = await axios.post(`https://osas-1-el9f.onrender.com/products`, userpayload);
 
         console.log(res.data);
 
@@ -299,9 +293,9 @@ export default createStore({
     async addToCart(context,userValidity){
 
       try {
-        const res = await axios.post(`https://osas-3.onrender.com/cart/${userValidity}?userID=${$cookies.get('userId')}`,userValidity);
+        const res = await axios.post(`https://osas-1-el9f.onrender.com/cart/${userValidity}?userID=${$cookies.get('userId')}`,userValidity);
 
-        console.log(`https://osas-3.onrender.com/cart/${$cookies.get('userId')}`)
+        console.log(`https://osas-1-el9f.onrender.com/cart/${$cookies.get('userId')}`)
   
         context.commit('addProd', res.data)
 
@@ -318,7 +312,7 @@ export default createStore({
     async getCart(context){
 
       try {
-        const res = await axios.get(`https://osas-3.onrender.com/cart`);
+        const res = await axios.get(`https://osas-1-el9f.onrender.com/cart`);
       } catch (error) {
 
         await swal(`Unable to get products from cart`, "try to log in first", "error");
@@ -331,9 +325,9 @@ export default createStore({
 
       try {
 
-        const res = axios.delete(`https://osas-3.onrender.com/cart/${TargProd}?userID=${$cookies.get('userId')}`);
+        const res = axios.delete(`https://osas-1-el9f.onrender.com/cart/${TargProd}?userID=${$cookies.get('userId')}`);
 
-        console.log(TargProd, `https://osas-3.onrender.com/cart/${TargProd}?userID=${$cookies.get('userId')}`)
+        console.log(TargProd, `https://osas-1-el9f.onrender.com/cart/${TargProd}?userID=${$cookies.get('userId')}`)
   
         window.location.reload();
 
@@ -349,7 +343,7 @@ export default createStore({
 
       try {
 
-        const res = await axios.get(`https://osas-3.onrender.com/cart/${$cookies.get('userId')}`);
+        const res = await axios.get(`https://osas-1-el9f.onrender.com/cart/${$cookies.get('userId')}`);
 
         let allData = res.data.products;
   

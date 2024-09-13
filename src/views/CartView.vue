@@ -1,28 +1,30 @@
 <template>
-    <div class="mt-5 pt-5" v-if="$cookies.get('jwt')">
+    <div class="cart-container" v-if="$cookies.get('jwt')">
 
-        <div class="d-flex justify-content-center">
-            <input type="search" class="form-control form-control-dark mx-3 w-50 mb-2" placeholder="Search..." aria-label="Search" v-model="search" @change="searchByName()">
+        <!-- Search Bar -->
+        <div class="search-wrapper">
+            <input type="search" class="search-input" placeholder="Search products..." v-model="search" @change="searchByName()">
         </div>
-        <div class="d-flex justify-content-center gap-1 container">
 
-            <button @click="sortBy()" id="sortBy" class="btn bg-black text-white"><i class="fa-solid fa-arrow-down-up-across-line fa-lg" style="color: #ffffff;"></i> Sort</button>
-            
-            <router-link to="/products" class="btn bg-black text-white" id="router"><i class="fa-solid fa-basket-shopping fa-lg" style="color: #ffffff;"></i> Continue shopping</router-link>
-            <button type="button" class="btn bg-black text-white" data-bs-toggle="modal" data-bs-target="#exampleModal">
-                <i class="fa-regular fa-user fa-lg" style="color: #ffffff;"></i> Your profile
+        <!-- Action Buttons -->
+        <div class="action-btn-group">
+            <button @click="sortBy()" class="btn-sort"><i class="fa-solid fa-sort"></i> Sort</button>
+            <router-link to="/products" class="btn-shop"><i class="fa-solid fa-shopping-bag"></i> Continue Shopping</router-link>
+
+            <button type="button" class="btn-profile" data-bs-toggle="modal" data-bs-target="#profileModal">
+                <i class="fa-regular fa-user"></i> Profile
             </button>
-            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+            <!-- Profile Modal -->
+            <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel"><i class="fa-regular fa-user fa-lg px-3" style="color: #000000;"></i><i class="fa-regular fa-user fa-lg" style="color: #ffffff;"></i>Your profile </h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <h1 class="modal-title" id="profileModalLabel"><i class="fa-regular fa-user"></i> Your Profile</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                         </div>
                         <div class="modal-body">
-                            <div class="">
-                                <UserProfile />
-                            </div>
+                            <UserProfile />
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -31,179 +33,182 @@
                     </div>
                 </div>
             </div>
-            <button class="btn bg-black text-white" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling"><i class="fa-regular fa-heart fa-lg" style="color: #ffffff;"></i> Your favourites</button>
         </div>
 
-        <div class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
-            <div class="offcanvas-header">
-                <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Favourites <i class="fa-regular fa-heart fa-sm" style="color: #ff0000;"></i></h5>
-                <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        <!-- Cart Items -->
+        <div v-for="cart in searchByName() || sortBy()" :key="cart.prodID" class="cart-item">
+            <div class="cart-item-image">
+                <img :src="cart.prodUrl" class="cart-img"/>
             </div>
-            <div class="offcanvas-body" v-for="i in getfavs()" v-bind:key="i.prodID" id="scroll">
-                <p>{{ i.prodName }}</p>
-                <img :src="i.prodUrl" height="50" width="50" loading="lazy" class="img img-fluid shadow mx-2 border p-1 my-4"/>
+
+            <div class="cart-item-details">
+                <div class="product-name">Name: {{ cart.prodName }}</div>
+                <div class="product-price">Price: R{{ cart.productPrice }}</div>
+                <div class="product-actions">
+                    <button @click="deleteFromCart(cart.prodID)" class="btn-decrease-qty">Decrease Quantity</button>
+                </div>
+                <div class="product-quantity">Quantity: {{ cart.quantity }}</div>
+                <div class="product-total">Total Price: R{{ cart.total_price }}</div>
             </div>
         </div>
-
-        <div v-for="cart in searchByName() || sortBy()" v-bind:key="cart.prodID" class="mt-3" id="cart">
-            <div id="img" class="container">
-                <img :src="cart.prodUrl" height="200" width="200" loading="lazy" class="img img-fluid shadow mx-2 border p-1 my-4"/>
-            </div>
-            <div id="borderLR" class="mx-3 container">
-                <div class="fw-bold py-3 my-3 px-4">
-                    <div id="prodName"><span>Name:</span> {{ cart.prodName }}</div>
-                </div>
-                <div class="py-1 my-3 px-2">
-                    <div id="prodPrice"><span>Price:</span> R{{ cart.amount }}</div>
-                </div>
-                <div class="py-2 my-3 px-4 d-flex gap-2 border-top">
-                    <button @click="addToFavs(cart)" class="btn bg-white shadow border text-white" :title="'add ' + cart.prodName + ' to favourites'"><i class="fa-regular fa-heart fa-lg fa-beat" style="color: #ff0000;"></i></button>
-                    <button @click="deleteFromCart(cart.prodID)"  class="btn bg-black text-white w-100">Decrease quantity</button>
-                </div>
-            </div>
-            <div class="py-3 my-1 px-4">
-                <div class="fw-bold py-3 my-3 px-4">
-                    <div id="prodQuantity"><span>Quantity:</span>{{ cart.quantity }}</div>
-                </div>
-                <div id="prodTotal" class="px-2 py-1"><span>Total price:</span> R{{ cart.total_price }}</div>
-            </div>
-        </div>  
-
     </div>
 
-    <div v-else id="FourOFour" class="container-fluid">
+    <!-- Fallback for Unauthorized Access -->
+    <div v-else class="error-403">
         <h1 class="display-1">403 Forbidden</h1>
     </div>
 </template>
+
 <script>
-    import UserProfile from './UserProfile.vue'
+import UserProfile from './UserProfile.vue'
 export default {
-    // sort by name price 
-    data(){
+    data() {
         return {
-            Userfavourites: [],
-            search : ''
+            search: ''
         }
     },
-    components : {
+    components: {
         UserProfile
     },
-    methods : {
-        getCart(){
+    methods: {
+        getCart() {
             this.$store.dispatch('userCart')
-        }, 
-        deleteFromCart(productID){
+        },
+        deleteFromCart(productID) {
             this.$store.dispatch('removeFromCart', productID)
         },
-        async addToFavs(favz){
-            let storage = this.Userfavourites
-            const fvs = storage.push(favz)
-            console.log(fvs);
-            console.log(storage);
-            const data = JSON.stringify(storage)
-            await swal(`You just liked a product`, `The product you liked has been saved`, "success");
-            localStorage.setItem('favs', data)
-            window.location.reload()
-        },
-        getfavs(){
-            let favs = JSON.parse(localStorage.getItem("favs")) || [];
-            return favs
-        },
-        searchByName(){
+        searchByName() {
             let storageArr = this.$store.state.cartState;
             let inputX = this.search;
-            let resultY = storageArr.filter(cart => {
-                return cart.prodName.toLowerCase().includes(inputX.toLowerCase())
-            });
-            return resultY;
+            return storageArr.filter(cart => cart.prodName.toLowerCase().includes(inputX.toLowerCase()));
         },
-        sortBy(){
+        sortBy() {
             let inCart = this.$store.state.cartState;
-
             if (inCart) {
-                inCart.sort((a, b) => a.amount - b.amount);
+                inCart.sort((a, b) => a.productPrice - b.productPrice);
             }
-        },
+        }
     },
-    mounted(){
+    mounted() {
         this.getCart();
-        this.getfavs();
     }
 }
 </script>
-<style>
 
-
-#cart{
+<style scoped>
+.cart-container {
+    margin-top: 40px;
+    padding-top: 40px;
     display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: center;
-    border-left: 10px solid purple;
+    flex-direction: column;
+    align-items: center;
 }
 
-#cart:hover{
-    border-left: 10px solid rgb(0, 149, 242);
-    transition: all 0.2s ease-in-out;
-}
-
-#scroll{
-    max-height: 100vh;
-    overflow: scroll;
-}
-
-#borderLR{
-    /* border-left: 4px solid rgb(188, 13, 188);
-    border-right: 4px solid rgb(188, 13, 188); */
-    margin-top: 20px;
+.search-wrapper {
     margin-bottom: 20px;
-    /* margin-left: 20px; */
+    display: flex;
+    justify-content: center;
 }
 
-#prodTotal{
-    background-color: whitesmoke;
-    border-radius: 20px;
-    transition: 1s ease-in;
-    box-shadow: 2px 2px 4px 2px rgba(0, 0, 0, 0.211);
-    z-index: 2 !important;
+.search-input {
+    width: 60%;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #ced4da;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: border-color 0.3s ease;
 }
 
-#FourOFour{
+.search-input:focus {
+    border-color: #007bff;
+}
+
+.action-btn-group {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.btn-sort, .btn-shop, .btn-profile {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-sort:hover, .btn-shop:hover, .btn-profile:hover {
+    background-color: #0056b3;
+}
+
+.modal-content {
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.cart-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.cart-item:hover {
+    transform: scale(1.02);
+}
+
+.cart-item-image {
+    flex-basis: 30%;
+    display: flex;
+    justify-content: center;
+}
+
+.cart-img {
+    height: 150px;
+    width: 150px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.cart-item-details {
+    flex-basis: 70%;
+    padding-left: 20px;
+}
+
+.product-name, .product-price, .product-quantity, .product-total {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.product-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-decrease-qty {
+    background-color: #343a40;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-decrease-qty:hover {
+    background-color: #1d2124;
+}
+
+.error-403 {
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family: Arial, sans-serif;
 }
-
-
-@media (max-width: 998px) {
-    #cart{
-        display: flex;
-        flex-direction: row;
-        width: 100%;
-        justify-content: center;
-        flex-wrap: wrap;
-        border: none;
-    }
-}
-@media (max-width: 558px) {
-    #router,div, button, i{
-        font-size: 12px !important;
-    }
-}
-@media (max-width: 358px) {
-    #router,div, button, i{
-        font-size: 10px !important;
-    }
-}
-@media (max-width: 301px) {
-    #router,div, button{
-        font-size: 8px !important;
-    }
-    i{
-        font-size: 10px !important;
-    }
-}
-    
 </style>

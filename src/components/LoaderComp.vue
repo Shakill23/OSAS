@@ -1,163 +1,103 @@
 <template>
-    <div v-if="!loaded" class="loader">
-      <div class="dot-spinner">
-        <div class="dot-spinner__dot"></div>
-        <div class="dot-spinner__dot"></div>
-        <div class="dot-spinner__dot"></div>
-        <div class="dot-spinner__dot"></div>
-        <div class="dot-spinner__dot"></div>
-        <div class="dot-spinner__dot"></div>
-        <div class="dot-spinner__dot"></div>
-        <div class="dot-spinner__dot"></div>
+  <div v-if="!loaded" class="loader">
+    <div class="ring-loader">
+      <div class="ring"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
     </div>
-    </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        loaded: false // Initial state: page not loaded
-      };
-    },
-    mounted() {
-      // Simulate a 5-second delay before displaying content
-      setTimeout(() => {
-        // Set loaded to true after 2 seconds
-        this.loaded = true; 
-      }, 2000);
-    }
-  };
-  </script>
-  
-  <style scoped>
-  /* CSS styles for the loader */
-  .loader {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgb(0, 0, 0);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 3333;
+  </div>
+</template>
+
+<script>
+export default {
+  data() {
+    return {
+      loaded: false,
+    };
+  },
+  mounted() {
+    setTimeout(() => {
+      this.loaded = true;
+    }, 2000); // Simulate loading for 2 seconds
+  },
+};
+</script>
+
+<style scoped>
+.loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.9); /* Darker transparent background */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.ring-loader {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.ring {
+  width: 100px;
+  height: 100px;
+  border: 4px solid rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  border-top-color: #00bfff; /* Light blue color */
+  animation: spin 1.5s infinite linear;
+  box-shadow: 0 0 20px #00bfff, 0 0 40px rgba(0, 191, 255, 0.5); /* Glowing shadow */
+}
+
+.dot {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 10px;
+  height: 10px;
+  background-color: #00bfff;
+  border-radius: 50%;
+  box-shadow: 0 0 15px rgba(0, 191, 255, 0.5), 0 0 30px rgba(0, 191, 255, 0.3);
+  animation: dotPulse 2s infinite ease-in-out;
+}
+
+.dot:nth-child(2) {
+  transform: rotate(90deg) translate(45px);
+  animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+  transform: rotate(180deg) translate(45px);
+  animation-delay: 0.4s;
+}
+
+.dot:nth-child(4) {
+  transform: rotate(270deg) translate(45px);
+  animation-delay: 0.6s;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  /* Loader spinner animation */
-  .dot-spinner {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    --uib-speed: 0.9s;
-    height: 2.8rem;
-    width: 2.8rem;
-    /*animation: float 3s linear infinite;*/
+  100% {
+    transform: rotate(360deg);
   }
-  
-  @keyframes float {
-    0% {
-      transform: rotate(0deg) translate(100px) rotate(0deg);
-    }
-  
-    100% {
-      transform: rotate(360deg) translate(100px) rotate(-360deg);
-    }
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    transform: scale(1);
   }
-  
-  .dot-spinner__dot::before {
-    content: '';
-    height: 20%;
-    width: 20%;
-    border-radius: 50%;
-    background-color: #fff;
-    filter: drop-shadow(0 0 10px rgb(95, 150, 202));
-    box-shadow: -6px -6px 11px #c1c1c1, 6px 6px 11px #ffffff;
-    transform: scale(0);
-    opacity: 0.5;
-    animation: pulse0112 calc(var(--uib-speed) * 1.111) ease-in-out infinite;
-    box-shadow: 0 0 20px rgba(18, 31, 53, 0.3);
+  50% {
+    transform: scale(1.5);
+    background-color: #ffffff;
   }
-  
-  .dot-spinner__dot {
-    position: absolute;
-    top: 0;
-    left: 0;
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    height: 100%;
-    width: 100%;
-  }
-  
-  .dot-spinner__dot:nth-child(2) {
-    transform: rotate(45deg);
-  }
-  
-  .dot-spinner__dot:nth-child(2)::before {
-    animation-delay: calc(var(--uib-speed) * -0.875);
-  }
-  
-  .dot-spinner__dot:nth-child(3) {
-    transform: rotate(90deg);
-  }
-  
-  .dot-spinner__dot:nth-child(3)::before {
-    animation-delay: calc(var(--uib-speed) * -0.75);
-  }
-  
-  .dot-spinner__dot:nth-child(4) {
-    transform: rotate(135deg);
-  }
-  
-  .dot-spinner__dot:nth-child(4)::before {
-    animation-delay: calc(var(--uib-speed) * -0.625);
-  }
-  
-  .dot-spinner__dot:nth-child(5) {
-    transform: rotate(180deg);
-  }
-  
-  .dot-spinner__dot:nth-child(5)::before {
-    animation-delay: calc(var(--uib-speed) * -0.5);
-  }
-  
-  .dot-spinner__dot:nth-child(6) {
-    transform: rotate(225deg);
-  }
-  
-  .dot-spinner__dot:nth-child(6)::before {
-    animation-delay: calc(var(--uib-speed) * -0.375);
-  }
-  
-  .dot-spinner__dot:nth-child(7) {
-    transform: rotate(270deg);
-  }
-  
-  .dot-spinner__dot:nth-child(7)::before {
-    animation-delay: calc(var(--uib-speed) * -0.25);
-  }
-  
-  .dot-spinner__dot:nth-child(8) {
-    transform: rotate(315deg);
-  }
-  
-  .dot-spinner__dot:nth-child(8)::before {
-    animation-delay: calc(var(--uib-speed) * -0.125);
-  }
-  
-  @keyframes pulse0112 {
-    0%,
-    100% {
-      transform: scale(0);
-      opacity: 0.5;
-    }
-  
-    50% {
-      transform: scale(1);
-      opacity: 1;
-    }
-  }
-  </style>
+}
+</style>

@@ -1,149 +1,164 @@
 <template>
   <div id="landing">
+    <!-- Animated background shapes -->
+    <div class="shape shape-1"></div>
+    <div class="shape shape-2"></div>
+    <div class="shape shape-3"></div>
 
     <div class="container pt-5">
-
-      <h1 class="text-white display-2 fw-bold pt-5" id="animate">Hello Gamers welcome to W-Store</h1>
-
-      <div class="d-flex justify-content-center my-2">
-        <dividerCompVue />
-      </div>
-      
-
-
-      
-      <textRenderVue data-compTxt RenderContent="Welcome to W Store, your ultimate destination for premium gaming PCs and consoles. Elevate your gaming experience with top-quality hardware and unrivaled performance. Shop now and level up your game!"/>
-
-      <router-link to="/login">
-
-        <ButtonCompVue btnContent="login!" data-animate/>
-        
-      </router-link>
-
-      <router-link to="/about">
-
-        <ButtonCompVue btnContent="Know more" data-animate/>
-
-      </router-link>
-
-
-      <div class="d-flex justify-content-center my-2">
-        <dividerCompVue />
-      </div>
-
-      
-    </div>
-    <div class="container mt-2 d-flex justify-content-evenly" id="mediaIconContainer" data-animate>
-
-      <div>
-        <span>
-          <img src="https://cdn-images.imagevenue.com/21/e7/b2/ME17RKPL_o.png" alt="" height="50" width="50">
-        </span>
-        <br>
-        <h5 class="lead text-white fw-bold">Quality products</h5>
-      </div>
-
-      <div>
-        <span>
-          <img src="https://cdn-images.imagevenue.com/c4/0c/51/ME17RKRG_o.png" alt="" height="50" width="50">
-        </span>
-        <br>
-        <h5 class="lead text-white fw-bold">High speed Gaming</h5>
-      </div>
-
-      <div>
-        <span>
-          <img src="https://cdn-images.imagevenue.com/d5/86/89/ME17RKS9_o.png" alt="" height="50" width="50">
-        </span>
-        <br>
-        <h5 class="lead text-white fw-bold">Fast delivery!</h5>
-      </div>
-
+      <h1 class="display-2 fw-bold pt-5 text-animation hover-effect">OSAS</h1>
+      <p class="slogan hover-effect">Your One-Stop Appliance Shop</p>
     </div>
   </div>
 </template>
 
 <script>
 import ButtonCompVue from './ButtonComp.vue';
-import dividerCompVue from './dividerComp.vue';
-import textRenderVue from './textRender.vue';
+
 export default {
   props: {
     msg: String
   },
-  components : {
+  components: {
     ButtonCompVue,
-    textRenderVue,
-    dividerCompVue
   }
 }
 </script>
 
-
 <style scoped>
-
-#landing{
+#landing {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  background-image: url('https://cdn-images.imagevenue.com/fe/e9/59/ME17RH4H_o.png');
-  min-height: 100vh !important;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  border-image: fill 0 linear-gradient(rgba(0, 0, 0, 0.266) 50%, rgba(0, 0, 0, 0.329));
+  min-height: 100vh;
+  background-color: #1e1e1e; /* Solid background color */
+  position: relative;
+  overflow: hidden;
 }
 
-#animate{
-  animation-name: onload;
-  animation-duration: 0.7s;
-}
-
-[data-compTxt]{
-  animation-name: onload;
-  animation-duration: 1s;
-  color: white !important;
+.text-animation {
+  background: linear-gradient(90deg, #ff4b2b, #ff416c, #42e695, #3bb2b8);
+  background-size: 400%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: gradientFill 5s infinite;
   text-align: center;
 }
 
-[data-animate]{
-  animation-name: onload;
-  animation-duration: 1.25s;
-  color: white !important;
+.slogan {
+  color: white;
+  font-size: 1.2rem;
+  text-align: center;
 }
 
-h3 {
-  margin: 40px 0 0;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
+/* Hover Effects */
+.hover-effect:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease-in-out;
 }
 
-@keyframes onload {
-  from {
-    opacity: 0.1;
-    transform: translateY(190px);
+/* Background shapes */
+.shape {
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.3;
+  animation: rotate 10s infinite linear;
+}
+
+.shape-1 {
+  width: 200px;
+  height: 200px;
+  background: rgba(255, 75, 43, 0.8);
+  top: 10%;
+  left: 15%;
+  animation-delay: 0s;
+}
+
+.shape-2 {
+  width: 150px;
+  height: 150px;
+  background: rgba(66, 230, 149, 0.8);
+  bottom: 20%;
+  right: 20%;
+  animation-delay: 2s;
+}
+
+.shape-3 {
+  width: 100px;
+  height: 100px;
+  background: rgba(59, 178, 184, 0.8);
+  top: 50%;
+  right: 10%;
+  animation-delay: 4s;
+}
+
+/* Cool gradient fill looping animation */
+@keyframes gradientFill {
+  0% {
+    background-position: 0% 50%;
   }
-  to{
-    opacity: 1;
-    transform: translateY(0px);
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }
 
-@media (max-width: 555px) {
+/* Shape rotation animation */
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 
-  #mediaIconContainer{
-    display: flex;
-    flex-direction: column;
+/* Responsive Design */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  .slogan {
+    font-size: 1rem;
+  }
+
+  .shape-1, .shape-2, .shape-3 {
+    width: 150px;
+    height: 150px;
+  }
+}
+
+@media (max-width: 576px) {
+  h1 {
+    font-size: 2rem;
+  }
+
+  .slogan {
+    font-size: 0.9rem;
+  }
+
+  .shape-1, .shape-2, .shape-3 {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+@media (max-width: 320px) {
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .slogan {
+    font-size: 0.8rem;
+  }
+
+  .shape-1, .shape-2, .shape-3 {
+    width: 80px;
+    height: 80px;
   }
 }
 </style>

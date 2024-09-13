@@ -1,142 +1,224 @@
 <template>
-    <div class="" id="formBody">
-        <div class="container col-xl-10 col-xxl-8 px-4 py-5">
-            <div class="row align-items-center g-lg-5 py-5">
-              <div class="col-md-10 mx-auto col-lg-5 py-5" id="form">
-                  <div class="form-floating mb-3">
-                    <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com" v-model="emailAdd">
-                    <label for="floatingEmail">Email address</label>
-                  </div>
-                  <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="floatingPassword" placeholder="Password" v-model="passw">
-                    <label for="floatingPassword">Password</label>
-                  </div>
-                  <div class="form-floating mb-3">
-                    <input type="password" class="form-control" id="floatingRole" placeholder="Role" v-model="userRole" disabled>
-                    <label for="floatingRole">Identity code</label>
-                  </div>
-                  <div class="form-floating mb-3">
-                    <input type="text" class="form-control" id="floatingRole" placeholder="Specify your role to access as admin" v-model="userRole" v-if="this.emailAdd === 'JD1@gmail.com'">
-                    <label for="floatingRole" v-if="this.emailAdd === 'JD1@gmail.com'">Specify your role to access as admin</label>
-                  </div>
-                  <div class="d-flex gap-1 mt-2">
-                    <button class="w-100 btn" type="submit" @click="loginUser()">Login</button>
-                  </div>
-                  <hr class="my-4">
-                  <small>No account?<router-link to="/signup"  class="text-white">Click here to create an account</router-link></small>
-                <div id="eerTxt"></div>
-              </div>
-            </div>
+  <div class="form-wrapper">
+    <div class="container form-container">
+      <div class="row form-row">
+        <div class="col-md-9 mx-auto col-lg-6 form-box">
+          <div class="input-group mb-3">
+            <label for="userEmail">Email address</label>
+            <input type="email" class="form-control" id="userEmail" placeholder="Email" v-model="userEmail" />
+            
           </div>
+          <div class="input-group mb-3">
+            <label for="userPass">Password</label>
+            <input type="password" class="form-control" id="userPass" placeholder="Password" v-model="userPass" />
+            
+          </div>
+          <div class="input-group mb-3" v-if="userEmail === 'JD1@gmail.com'">
+            <input type="text" class="form-control" id="adminRole" placeholder="Admin Code" v-model="userRole" />
+            <label for="adminRole">Specify Role for Admin Access</label>
+          </div>
+          <div class="button-wrapper">
+            <button class="btn-primary" type="submit" @click="loginUser">Login</button>
+          </div>
+          <hr class="divider mt-4" />
+          <small class="signup-text">
+            Don't have an account? <router-link to="/signup" class="signup-link">Sign Up Here</router-link>
+          </small>
+          <div id="errorTxt"></div>
+        </div>
+      </div>
     </div>
+  </div>
 </template>
+
 <script>
 export default {
-
-    data(){
+    data() {
       return {
-        userID : null,
-        username : '',
-        emailAdd : '',
-        passw : '',
-        userRole : 'user',
-        profileURL : ''
+        userID: null,
+        username: '',
+        userEmail: '',
+        userPass: '',
+        userRole: 'user',
+        userImg: ''
       }
     },
-    methods : {
-      loginUser(){
-        // console.log(this.$data.username)
+    methods: {
+      loginUser() {
         this.$store.dispatch('loginUser', this.$data)
       }
     }
-    
 }
 </script>
-<style scoped>
 
-#formBody {
-  background-image: url('https://cdn-images.imagevenue.com/3f/a1/52/ME17SWB0_o.png');
+<style scoped>
+/* Main form wrapper styling */
+.form-wrapper {
+  background-image: url("https://shakill23.github.io/allImages/images/maldives.jpg");
   background-repeat: no-repeat;
   background-size: cover;
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  border-image: fill 0 linear-gradient(rgba(0, 0, 0, 0.343),rgb(0, 0, 0, 0.241));
-}
-#form{
-  background-color: rgba(245, 245, 245, 0.352);
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  border-radius: 10px;
-  z-index: 50;
+  padding-top: 80px; /* Ensures content is not hidden under the navbar */
 }
 
-button {
-  --border-radius: 15px;
-  --border-width: 4px;
-  appearance: none;
-  position: relative;
-  padding: 1em 2em;
-  border: 0;
-  background-color: #21212100;
-  font-family: "Roboto", Arial, "Segoe UI", sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: #fff;
-  z-index: 2;
- }
- 
- button::after {
-  --m-i: linear-gradient(#000, #000);
-  --m-o: content-box, padding-box;
-  content: "";
-  position: absolute;
-  left: 0;
-  top: 0;
+/* Container for form elements */
+.form-container {
+  padding: 2.5rem;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  animation: fadeIn 0.7s ease-in-out;
   width: 100%;
-  height: 100%;
-  padding: var(--border-width);
-  border-radius: var(--border-radius);
-  background-image: conic-gradient(
-     #488cfb,
-     #29dbbc,
-     #ddf505,
-     #ff9f0e,
-     #e440bb,
-     #655adc,
-     #488cfb
-   );
-  -webkit-mask-image: var(--m-i), var(--m-i);
-  mask-image: var(--m-i), var(--m-i);
-  -webkit-mask-origin: var(--m-o);
-  mask-origin: var(--m-o);
-  -webkit-mask-clip: var(--m-o);
-  mask-clip: var(--m-o);
-  mask-composite: exclude;
-  -webkit-mask-composite: destination-out;
-  filter: hue-rotate(0);
-  animation: rotate-hue linear 500ms infinite;
-  animation-play-state: paused;
- }
- 
- button:hover::after {
-  animation-play-state: running;
- }
- 
- @keyframes rotate-hue {
-  to {
-   filter: hue-rotate(1turn);
+  max-width: 600px;
+}
+
+/* Form row */
+.form-row {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Box holding form inputs */
+.form-box {
+  background-color: rgba(255, 255, 255, 0.85);
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-box:hover {
+  transform: scale(1.02);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* General input styling */
+.input-group {
+  position: relative;
+  width: 100%;
+}
+
+.input-group input {
+  border-radius: 8px;
+  padding: 0.75rem;
+  border: 1px solid #ced4da;
+  transition: border-color 0.3s ease;
+  width: 100%;
+}
+
+.input-group input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+.input-group label {
+  margin-left: 0.5rem;
+}
+
+/* Button Styling */
+.button-wrapper {
+  margin-top: 1.5rem;
+  text-align: center;
+}
+
+.btn-primary {
+  padding: 0.75rem 2rem;
+  background-color: #007bff;
+  border: none;
+  border-radius: 50px;
+  font-size: 16px;
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+  transition: background-color 0.3s, box-shadow 0.3s, transform 0.3s ease;
+  width: 100%;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+  transform: translateY(-3px);
+}
+
+/* Divider Styling */
+.divider {
+  border-top: 1px solid #ccc;
+  margin-top: 1.5rem;
+}
+
+/* Signup link */
+.signup-link {
+  color: #17a2b8;
+}
+
+.signup-text {
+  color: #ddd;
+}
+
+/* Keyframes for animation */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
   }
- }
- 
- button,
- button::after {
-  box-sizing: border-box;
- }
- 
- button:active {
-  --border-width: 5px;
- }
-    
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive styling */
+@media (max-width: 1024px) {
+  .form-box {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .form-container {
+    padding: 1.5rem;
+  }
+  .btn-primary {
+    padding: 0.75rem;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 576px) {
+  .form-wrapper {
+    padding-top: 50px; /* Adjust for navbar height */
+  }
+  .form-box {
+    padding: 1rem;
+  }
+  .input-group input {
+    padding: 0.5rem;
+  }
+  .btn-primary {
+    padding: 0.75rem;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 320px) {
+  .form-wrapper {
+    padding-top: 30px;
+  }
+  .form-container {
+    padding: 1rem;
+  }
+  .form-box {
+    padding: 0.75rem;
+  }
+  .btn-primary {
+    padding: 0.5rem;
+    font-size: 12px;
+  }
+  .input-group input {
+    padding: 0.5rem;
+  }
+}
 </style>

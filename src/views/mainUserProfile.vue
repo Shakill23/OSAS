@@ -1,271 +1,206 @@
 <template>
-
-    <div class="mb-4" id="boxLg">
-        <div id="box" class="mt-5 pt-5">
-            <div v-for="user in userIsLogged()" v-bind:key="user" id="user" class="px-3">
-                <div class="card mx-2 shadow" style="width: 42.4rem;" id="container">
-                    <div class="d-flex">
-                        <p id="XYX" class="card-text small mx-2 my-1"><i class="fa-regular fa-circle-user fa-lg" style="color: #04ff00;"></i> Active</p>
-                    </div>
-
-                    <img :src="user.profileURL" class="card-img-top pt-2" id="objectImg" :alt="user.username">
-                    <div class="card-body">
-                        <h5 class="card-title fs-4">{{ user.username }}</h5>
-                        <p class="card-text fs-4">{{ user.emailAdd }}</p>
-                    </div>
-                    <div class="container">
-                        <div class="input-group flex-nowrap mb-2">
-                            <span class="input-group-text" id="addon-wrapping">Username</span>
-                            <input type="text" class="form-control" placeholder="user_name" aria-label="Username" aria-describedby="addon-wrapping" v-model="username">
-                          </div>
-                          <div class="input-group flex-nowrap mb-2">
-                             <span class="input-group-text" id="addon-wrapping">Profile img</span>
-                             <input type="text" class="form-control" placeholder="profileURL" aria-label="Username" aria-describedby="addon-wrapping" v-model="profileURL">
-                          </div>
-                          <div class="input-group flex-nowrap mb-2">
-                            <span class="input-group-text" id="addon-wrapping">Email add</span>
-                            <input type="text" class="form-control" placeholder="emailAdd" aria-label="Email" aria-describedby="addon-wrapping" v-model="user.emailAdd" readonly>
-                          </div>
-                          <div class="d-flex gap-2 justify-content-center my-2 col-lg-6 mx-auto">
-                            <router-link to="/products" class="btn" id="button">My shop</router-link>
-                            <button type="button" class="btn btn-primary" id="button" @click="updateUser(user.userID)">Save my changes</button>
-                            <router-link to="/admin" class="btn" id="button" v-if="$cookies.get('role') === 'admin'">Manage website</router-link>
-                        </div>
-                    </div>
-                </div>
+    <div class="main-container mb-4" id="userBox">
+      <!-- Profile Section -->
+      <section id="profileSection" class="profile-section mt-5">
+        <div v-for="user in userIsLogged()" :key="user" class="profile-card custom-shadow">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <p class="status-tag">
+              <i class="fa-regular fa-circle-user fa-lg status-icon"></i> Active
+            </p>
+          </div>
+          <div class="card-body text-center">
+            <img :src="user.userImg" class="user-avatar mx-auto mb-3" :alt="user.username" />
+            <h5 class="card-title">{{ user.username }}</h5>
+            <p class="card-text">{{ user.userEmail }}</p>
+          </div>
+          <div class="user-info px-3">
+            <div class="form-group">
+              <label for="username" class="form-label">Username</label>
+              <input type="text" class="form-control" v-model="username" placeholder="Enter username" />
             </div>
-        </div>
-        <div id="square">
-            <div class="mt-5 pt-5">
-
-                <div id="userActivity" class="">
-                    <div class="card mx-5 shadow" id="media">
-                        <h5 class="card-header text-start">Subscriptions</h5>
-                        <div class="card-body">
-                            <p class="card-text text-start"><i class="fa-solid fa-truck-fast fa-lg mx-2" style="color: #FFD43B;"></i> Super Shipping</p>
-                            <p class="card-text text-start"><i class="fa-regular fa-star fa-lg mx-2" style="color: #FFD43B;"></i> Premium client</p>
-                            <p class="card-text text-start"><i class="fa-solid fa-w fa-lg mx-2" style="color: #B197FC;"></i> W-store ULTRA</p>
-                            <hr />
-                            <p class="card-text text-center text-black-50">These are your lifetime subscriptions at W-store inc. these subscriptions are given to users as a Thank you! for choosing us</p>
-                        </div>
-                    </div>
-                    <div class="card mx-5 shadow mt-3" id="media">
-                        <h5 class="card-header text-start">Manage cart</h5>
-
-                        <div class="small" v-if="$store.state.cartState.length > 0">
-                            scroll here <i class="fa-solid fa-arrow-down fa-sm" style="color: #000000;"></i>
-                        </div>
-                        <div class="small" v-else>
-                            <router-link to='/cart'>nothing in cart</router-link>
-                        </div>
-
-                        <div id="overflow">
-
-                            <div class="card-body" v-for="cart in $store.state.cartState" v-bind:key="cart.prodID">
-                                <p class="card-text text-start fw-bold">{{ cart.prodName }}</p>
-                                <p class="card-text text-start"><i class="fa-solid fa-credit-card fa-lg" style="color: #B197FC;"></i> Premium client</p>
-                                <p class="card-text text-start"><i class="fa-solid fa-truck-fast fa-lg" style="color: #FFD43B;"></i> 1 day shipping</p>
-                            </div>
-
-                        </div>
-                        <div class="d-flex justify-content-center">
-                            <router-link to='/cart' class="btn bg-black text-white w-50 mb-1"><span class="quan">{{ $store.state.cartState.length }}</span> items in cart</router-link>
-                        </div>
-
-                    </div>
-                </div>
-                
+            <div class="form-group">
+              <label for="profileImg" class="form-label">Profile Image URL</label>
+              <input type="text" class="form-control" v-model="userImg" placeholder="Profile Image URL" />
             </div>
+            <div class="form-group">
+              <label for="email" class="form-label">Email</label>
+              <input type="text" class="form-control" v-model="user.userEmail" readonly />
+            </div>
+            <div class="action-buttons d-flex justify-content-between mt-3">
+              <router-link to="/products" class="btn btn-primary">Visit Shop</router-link>
+              <button type="button" class="btn btn-success" @click="updateUser(user.userID)">Save Changes</button>
+              <router-link to="/admin" class="btn btn-danger" v-if="$cookies.get('role') === 'admin'">Manage Website</router-link>
+            </div>
+          </div>
         </div>
+      </section>
+  
+      <!-- Cart Section -->
+      <section id="activitySection" class="cart-section mt-5">
+        <div class="cart-card custom-shadow">
+          <h5 class="card-header text-start">Check Your Cart</h5>
+          <div class="cart-body">
+            <p v-if="$store.state.cartState.length > 0" class="small text-center">
+              
+            </p>
+            <p v-else class="small text-center">
+              <router-link to="/cart">No items in cart</router-link>
+            </p>
+            <div class="text-center">
+              <router-link to="/cart" class="btn btn-secondary">
+                <span class="item-count">{{ $store.state.cartState.length }}</span> items in cart
+              </router-link>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
-</template>
-<script>
-export default {
-    data(){
-        return {
-            userID : $cookies.get('userId'),
-            username : '',
-            emailAdd : '',
-            passw : '',
-            userRole : '',
-            profileURL : '',
-        }
+  </template>
+  
+  <script>
+  export default {
+    data() {
+      return {
+        userID: $cookies.get('userId'),
+        username: '',
+        userEmail: '',
+        userPass: '',
+        userRole: '',
+        userImg: '',
+      };
     },
-    methods : {
-        userIsLogged(){
-            let users = JSON.parse(localStorage.getItem("activeUser")) || [];
-            return users
-        },
-        getCart(){
-            this.$store.dispatch('userCart');
-        },
-        updateUser(userID){
-          let userObjX = {
-            userID : this.userID,
-            username : this.username,
-            emailAdd : this.emailAdd,
-            passw : this.passw,
-            userRole : this.userRole,
-            profileURL : this.profileURL
-          }
-          this.$store.dispatch('updateUser', userObjX);
-        },
+    methods: {
+      userIsLogged() {
+        let users = JSON.parse(localStorage.getItem('activeUser')) || [];
+        return users;
+      },
+      getCart() {
+        this.$store.dispatch('userCart');
+      },
+      updateUser(userID) {
+        let userObjX = {
+          userID: this.userID,
+          username: this.username,
+          userEmail: this.userEmail,
+          userPass: this.userPass,
+          userRole: this.userRole,
+          userImg: this.userImg,
+        };
+        this.$store.dispatch('updateUser', userObjX);
+      },
     },
     mounted() {
-        this.userIsLogged();
-        this.getCart();
+      this.userIsLogged();
+      this.getCart();
     },
+  };
+  </script>
+  
+  <style scoped>
+
+.main-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 1rem;
+  align-items: center;
+  margin-top: 80px; 
 }
-</script>
-<style scoped>
-    #boxLg{
-        display: flex;
-    }
-    #box{
-        display: flex;
-        justify-content: start;
-    }
 
-    .quan{
-        background-color: red;
-        padding: 0.2em;
-        border-radius: 50%;
-    }
-
-    #overflow{
-        overflow-y: scroll !important;
-        max-height: 150px !important;
-    }
-
-    ::-webkit-scrollbar {
-        width: 5px !important;
-        height: 4px;
+  
+  /* Profile section */
+  .profile-section {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+  }
+  
+  .profile-card {
+    width: 100%;
+    max-width: 600px;
+    padding: 1rem;
+    border-radius: 10px;
+    background-color: #ffffff;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .profile-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  }
+  
+  .user-avatar {
+    width: 150px;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 50%;
+  }
+  
+  /* Form styling */
+  .form-group {
+    margin-bottom: 1rem;
+  }
+  
+  .form-label {
+    font-weight: bold;
+  }
+  
+  .input-group {
+    width: 100%;
+  }
+  
+  .action-buttons .btn {
+    flex: 1;
+    margin: 0 0.5rem;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+  
+  .action-buttons .btn:hover {
+    transform: translateY(-3px);
+  }
+  
+  /* Cart section */
+  .cart-section {
+    width: 100%;
+    max-width: 600px;
+  }
+  
+  .cart-card {
+    padding: 1rem;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  }
+  
+  .cart-body {
+    padding: 1rem;
+  }
+  
+  .item-count {
+    background-color: #dc3545;
+    border-radius: 50%;
+    padding: 0.5em;
+    font-size: 1.2em;
+  }
+  
+  /* Responsive styles */
+  @media (max-width: 768px) {
+    .profile-card, .cart-card {
+      max-width: 100%;
+      margin: 0;
     }
   
-     /* Track */
-    ::-webkit-scrollbar-track {
-        -webkit-border-radius: 1px;
-        scroll-behavior: smooth;
-        border-radius: 5px;
+    .action-buttons {
+      flex-direction: column;
+      gap: 0.5rem;
     }
-    
-    ::-webkit-scrollbar-thumb {
-        -webkit-border-radius: 10px;
-        border-radius: 10px;
-        background: rgb(0, 0, 0); 
+  }
+  
+  @media (max-width: 320px) {
+    .user-avatar {
+      width: 120px;
+      height: 120px;
     }
-    
-      /* triggers when page is inactive */
-    ::-webkit-scrollbar-thumb:window-inactive {
-        background: rgba(56, 54, 54, 0.632); 
-    }
-
-    #user{
-        display: flex;
-        flex-direction: row;
-    }
-
-    #userCol{
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        
-    }
-
-    #overflow{
-        max-width: 390px;
-        overflow-x: scroll;
-    }
-
-    #text{
-
-        text-align: justify;
-    }
-
-    #objectImg{
-        object-fit: contain;
-        height: 300px;
-    }
-
-    #XYX{
-        cursor: pointer;
-    }
-
-    #button {
-        width: fit-content;
-        display: flex;
-        padding: 0.6em 1rem;
-        cursor: pointer;
-        gap: 0.4rem;
-        font-weight: bold;
-        border-radius: 10px;
-        text-shadow: 2px 2px 3px rgb(136 0 136 / 50%);
-        background: linear-gradient(15deg, #880088, #aa2068, #cc3f47, #de6f3d, #f09f33, #de6f3d, #cc3f47, #aa2068, #880088) no-repeat;
-        background-size: 300%;
-        color: #fff;
-        border: none;
-        background-position: left center;
-        box-shadow: 0 30px 10px -20px rgba(0,0,0,.2);
-        transition: background .3s ease;
-    }
-
-    #button:hover {
-        background-size: 320%;
-        background-position: right center;
-    }
-
-    #button:hover svg {
-        fill: #fff;
-    }
-
-    #button svg {
-        width: 23px;
-        fill: #f09f33;
-        transition: .3s ease;
-    }
-
-    @media (max-width: 1028px) {
-        #boxLg{
-            display: flex;
-            flex-direction: column;
-        }
-
-        #userActivity{
-            min-width: 100% !important;
-        }
-        #media{
-            width: 920px;
-        }
-    }
-    @media (max-width: 990px) {
-        #boxLg{
-            display: flex;
-            flex-direction: column;
-        }
-
-        #userActivity{
-            width: 100% !important;
-        }
-        #media{
-            width: 620px;
-        }
-    }
-    @media (max-width: 525px) {
-        #boxLg{
-            display: flex;
-            flex-direction: column;
-            justify-content: center !important;
-        }
-
-        #container{
-            width: 100% !important;
-        }
-
-        #userActivity{
-            width: 100% !important;
-        }
-        #media{
-            width: 250px;
-        }
-    }
-</style>
+  }
+  </style>
+  

@@ -1,130 +1,188 @@
 <template>
-  <div id="about">
-    <div class="px-4 pt-5 my-5 text-center">
-      <h1 class="display-4 fw-bold text-body-emphasis" id="text">Take W's with W-store</h1>
-      <div class="col-lg-6 mx-auto">
-        <p class="lead mb-4 text-white">Welcome to W Store, your ultimate destination for cutting-edge gaming tech! Dive into the heart of the action with our array of high-powered gaming gear designed to elevate your gameplay to new heights. From lightning-fast processors to immersive virtual reality setups, we've got everything you need to conquer the digital realm like never before. Upgrade your gaming experience with W Store today!</p>
-        <router-link to="/products" class="btn mb-2 mx-1" id="button">Explore our store</router-link>
-        <router-link to="/" class="btn mb-2 mx-1" id="button">Contact our store</router-link>
-      </div>
-      <div class="overflow-hidden" style="max-height: 34.9vh;" id="hideBorder">
-        <div class="container px-5">
-          <img src="https://i.postimg.cc/9mMjX75j/pexels-tomasz-filipek-1637436.jpg" class="img-fluid border rounded-3 shadow-lg mb-4" alt="Example image" width="700" height="500" loading="lazy">
-        </div>
+  <div class="about-section">
+    <div class="hero-text-container">
+      <h1 class="hero-title">About</h1>
+      <div class="intro-card" data-aos="fade-up" data-aos-duration="2000">
+        <p class="intro-description">
+          Welcome to OSAS, your ultimate destination for top-quality appliances at unbeatable prices. We offer a diverse range of products designed to make your home more comfortable, efficient, and stylish. From the latest in kitchen technology to essential home gadgets, our curated selection ensures you find the perfect appliance for every need. <br />
+          Our commitment to exceptional customer service and competitive pricing means you can shop with confidence, knowing you’re getting the best value and support. Discover the future of home convenience with OSAS, where quality meets innovation.
+        </p>
       </div>
     </div>
-    <div class="container px-4 py-5" id="hanging-icons">
-      <h2 class="pb-2 border-bottom text-white fw-bold text-white">Experience Gaming Excellence</h2>
-      <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
-        <div class="col d-flex align-items-start">
-          <div class="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
-            <i class="fa-solid fa-gamepad fa-xl" style="color: #ffffff;"></i>
-          </div>
-          <div>
-            <h3 class="fs-2 text-white">High-End Tech</h3>
-            <p class="text-white">Unleash your gaming potential with top-of-the-line equipment meticulously curated by W Store. Elevate your gameplay with the latest innovations designed for ultimate performance.</p>
-            <a href="/products" class="btn btn-primary" id="button">
-              Explore Now
-            </a>
-          </div>
-        </div>
-        <div class="col d-flex align-items-start">
-          <div class="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
-            <i class="fa-solid fa-headset fa-xl" style="color: #ffffff;"></i>
-          </div>
-          <div>
-            <h3 class="fs-2 text-white">Exceptional Support</h3>
-            <p class="text-white">Experience unparalleled customer service with W Store's dedicated support team. Whether you need technical assistance or product guidance, we're here to ensure your gaming needs.</p>
-            <a href="/contact" class="btn btn-primary" id="button">
-              Contact us now
-            </a>
-          </div>
-        </div>
-        <div class="col d-flex align-items-start">
-          <div class="icon-square text-body-emphasis bg-body-secondary d-inline-flex align-items-center justify-content-center fs-4 flex-shrink-0 me-3">
-            <i class="fa-solid fa-truck-ramp-box fa-xl" style="color: #ffffff;"></i>
-          </div>
-          <div>
-            <h3 class="fs-2 text-white">Swift Deliveries</h3>
-            <p class="text-white">Don't wait to dive into your gaming adventures. With W Store's lightning-fast delivery service, your gear arrives promptly, ensuring you're ready to dominate the digital battlefield in no time.</p>
-            <a href="/products" class="btn btn-primary" id="button">
-              Get Yours Now
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-    
-  <div>
-</div>
   </div>
 </template>
-<script>
-</script>
+
+
 <style scoped>
-#about{
+/* Main section styling */
+.about-section {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: black;
   flex-direction: column;
+  align-items: center;
+  background: url("https://shakill23.github.io/allImages/images/land8.jpg") center/cover no-repeat;
+  min-height: 100vh;
+  padding: 20px;
+  margin-top: 80px; 
+  color: #fff;
 }
 
-#text {
-  background: #121FCF;
-  background: linear-gradient(to right, #121FCF 0%, #CF1512 100%);
+
+/* Hero text container and styling */
+.hero-text-container {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.hero-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(to right, #0099ff, #cc0000);
   -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: gradientText 3s infinite;
 }
 
-#button {
-  position: relative;
-  display: inline-block;
-  background: linear-gradient(to bottom, #8439e6, #c75555);
-  color: white;
-  font-family: "Segoe UI", sans-serif;
+/* Intro card styling */
+.intro-card {
+  max-width: 600px;
+  margin: 0 auto;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.intro-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+/* Button group and CTA button styling */
+.button-group {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.cta-button {
+  padding: 12px 24px;
+  font-size: 16px;
   font-weight: bold;
-  font-size: 18px;
-  border: none;
-  border-radius: 30px;
-  padding: 14px 28px;
-  cursor: pointer;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  animation: btnHover 2s infinite;
-  transition: all 0.3s ease-in-out;
+  border-radius: 25px;
+  text-decoration: none;
+  color: #fff;
+  transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-#button:hover {
-  background: linear-gradient(to bottom, #472c63, #5b67b7);
-  animation: animation55 1s ease-in-out infinite;
-  transform: translateY(-2px);
+.explore-button {
+  background: linear-gradient(to right, #ff7e5f, #feb47b);
 }
 
-
-#button:active {
-  transform: scale(0.95);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+.contact-button {
+  background: linear-gradient(to right, #6a11cb, #2575fc);
 }
 
-@keyframes btnHover {
+.cta-button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Features section styling */
+.features-container {
+  width: 100%;
+  padding: 40px 20px;
+  background: #1a1a1a;
+}
+
+.features-title {
+  font-size: 2rem;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.feature-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Feature cards styling */
+.feature-card {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.feature-title {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.feature-description {
+  font-size: 1rem;
+}
+
+/* Keyframes for text animation */
+@keyframes gradientText {
   0% {
-    background-position: left top;
+    background-position: 0% 50%;
   }
-
   100% {
-    background-position: right bottom;
+    background-position: 100% 50%;
   }
 }
 
-@keyframes animation55 {
-  0% {
-    background-position: left top;
+/* Media queries for responsiveness */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2rem;
   }
 
-  100% {
-    background-position: right bottom;
+  .intro-description {
+    font-size: 1rem;
+  }
+
+  .cta-button {
+    font-size: 14px;
+  }
+
+  .features-title {
+    font-size: 1.75rem;
+  }
+
+  .feature-title {
+    font-size: 1.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .intro-description {
+    font-size: 0.9rem;
+  }
+
+  .cta-button {
+    font-size: 12px;
+  }
+
+  .features-title {
+    font-size: 1.5rem;
+  }
+
+  .feature-title {
+    font-size: 1.2rem;
   }
 }
 </style>

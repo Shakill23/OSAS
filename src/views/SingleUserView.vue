@@ -1,8 +1,8 @@
 <template>
     <div v-for="x of $store.state.user" v-bind:key="x.userID">
-        <img :src="x.profileURL" :alt="x.username">
+        <img :src="x.userImg" :alt="x.username">
         <h1>{{ x.username }}</h1>
-        <h1>{{ x.emailAdd }}</h1>
+        <h1>{{ x.userEmail }}</h1>
         <h1>{{ x.userRole }}</h1>
     </div>
 </template>
